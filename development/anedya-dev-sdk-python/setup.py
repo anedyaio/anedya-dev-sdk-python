@@ -10,9 +10,9 @@ with open("README.md", "r", encoding="utf-8") as fh:
 # You should replace 'README.md' with the actual name of your README file.
 
 setup(
-    name='anedya-sdk',
+    name='anedya-dev-sdk-python',
     version='0.1.0',
-    description='Anedya SDK for IoT devices',
+    description='Anedya python based SDK for IoT devices',
     long_description=long_description,
     long_description_content_type="text/markdown",
     author='Saransh Jaiswal',
@@ -23,4 +23,18 @@ setup(
     package_dir={"": "src"},
     python_requires=">=3.7, <4",
     install_requires=['requests'],  # Add any required dependencies here
+    classifiers=[
+        "Development Status :: 1 - Pre-Alpha",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: Apache Software License",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3 :: Only",
+        # Add more classifiers as needed
+    ],
+    include_package_data=True,
+    # Add if you have non-Python files to include
 )
