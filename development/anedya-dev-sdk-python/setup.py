@@ -11,7 +11,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='anedya-sdk',
-    version='0.1.0',
+    version='0.1.1',
     description='Anedya SDK for IoT devices',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -24,7 +24,7 @@ setup(
     python_requires=">=3.7, <4",
     install_requires=['requests'],  # Add any required dependencies here
     classifiers=[
-        "Development Status :: 1 - Pre-Alpha",
+        "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python :: 3",

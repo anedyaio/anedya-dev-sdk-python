@@ -1,11 +1,20 @@
 Metadata-Version: 2.1
 Name: anedya-sdk
-Version: 0.1.0
+Version: 0.1.1
 Summary: Anedya SDK for IoT devices
-Home-page: https://github.com/
+Home-page: 
 Author: Saransh Jaiswal
 Author-email: saranshjaiswal09@gmail.com
 License: Apache License 2.0
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3 :: Only
 Requires-Python: >=3.7, <4
 Description-Content-Type: text/markdown
 License-File: LICENSE.txt
