@@ -2,7 +2,9 @@
 from config import AnedyaSDK
 
 def test_sdk_functionality():
-    sdk = AnedyaSDK(device_id="device_id", api_token="api_token", connection_mode="MQTT", timeout=60, max_buffer_size=10, tls_certificate="tls_certificate.pem")
+    config = AnedyaConfig(device_id="device_id", api_token="api_token", connection_mode="MQTT", timeout=60,
+                          max_buffer_size=10, tls_certificate="tls_certificate.pem")
+    sdk = AnedyaSDK(config)
 
     sdk.send_data("Sensor Data 1")
     sdk.send_data("Sensor Data 2")
