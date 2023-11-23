@@ -1,0 +1,10 @@
+README.md
+setup.cfg
+setup.py
+src/anedya_dev_sdk_python.egg-info/PKG-INFO
+src/anedya_dev_sdk_python.egg-info/SOURCES.txt
+src/anedya_dev_sdk_python.egg-info/dependency_links.txt
+src/anedya_dev_sdk_python.egg-info/requires.txt
+src/anedya_dev_sdk_python.egg-info/top_level.txt
+tests/test_config.py
+tests/test_core.py
