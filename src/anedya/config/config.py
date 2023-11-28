@@ -1,9 +1,4 @@
-from datetime import datetime
-import paho.mqtt.client as mqtt
-import ssl
-import time
 from enum import Enum
-from typing import Optional
 
 class ConnectionMode(Enum):
     HTTP = "HTTP"
@@ -48,4 +43,8 @@ class AnedyaConfig:
         Set maximum buffer size
         """
         self.max_buffer_size = buffersize
+    
+def default_config():
+    defconfig = AnedyaConfig()
+    return defconfig
     

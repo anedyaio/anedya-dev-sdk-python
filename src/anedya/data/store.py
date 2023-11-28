@@ -1,5 +1,5 @@
 import json
-from . import AnedyaEncoder
+from .encoder import AnedyaEncoder
 
 class batch:
     def __init__(self):

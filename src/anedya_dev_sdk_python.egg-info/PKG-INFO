@@ -1,12 +1,12 @@
 Metadata-Version: 2.1
 Name: anedya-dev-sdk-python
-Version: 0.1.0
-Summary: Anedya python based SDK for IoT devices
+Version: 0.0.1
+Summary: Anedya python based SDK for IoT devices. This SDK is currently under development. Future versions may include breaking changes.
 Home-page: 
-Author: Saransh Jaiswal
-Author-email: saranshjaiswal09@gmail.com
+Author: Anedya Systems
+Author-email: support@anedya.io
 License: Apache License 2.0
-Classifier: Development Status :: 1 - Pre-Alpha
+Classifier: Development Status :: 2 - Pre-Alpha
 Classifier: Intended Audience :: Developers
 Classifier: License :: OSI Approved :: Apache Software License
 Classifier: Programming Language :: Python :: 3

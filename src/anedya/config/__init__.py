@@ -1,5 +1,5 @@
-from .config import all
+from .config import *
 
-def defualt_config():
-    defconfig = config.AnedyaConfig()
-    return defconfig
+__all__ = [
+    "AnedyaConfig",
+]

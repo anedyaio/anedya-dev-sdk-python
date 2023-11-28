@@ -1,9 +1,8 @@
-from config import config
-from data import batch
 import requests
-
+from . import config
+from . import data
 class AnedyaClient:
-    def AnedyaInstance(self, config: config.AnedyaConfig):
+    def SetConfig(self, config: config.AnedyaConfig):
         """
         Initialize the Anedya SDK.
 
@@ -14,7 +13,7 @@ class AnedyaClient:
         # Create 
         
 
-    def submit_data(self, d: batch):
+    def submit_data(self, d: data.batch):
         """
         Send data to Anedya Cloud
         """
@@ -23,5 +22,3 @@ class AnedyaClient:
         if r.status_code != 200:
             return False
         return True
-
-    

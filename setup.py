@@ -11,20 +11,20 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='anedya-dev-sdk-python',
-    version='0.1.0',
+    version='0.0.2',
     description='Anedya python based SDK for IoT devices. This SDK is currently under development. Future versions may include breaking changes.',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    author='Saransh Jaiswal',
+    author='Anedya Systems',
     url='',
-    author_email='saranshjaiswal09@gmail.com',
+    author_email='support@anedya.io',
     license="Apache License 2.0",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     python_requires=">=3.7, <4",
     install_requires=['requests'],  # Add any required dependencies here
     classifiers=[
-        "Development Status :: 1 - Pre-Alpha",
+        "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: Apache Software License",
         "Programming Language :: Python :: 3",

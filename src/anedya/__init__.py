@@ -1,4 +1,5 @@
 # src/__init__.py
 
-from . import AnedyaClient
+from .anedya import AnedyaClient
+
 __all__ = ['AnedyaClient']
