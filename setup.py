@@ -11,12 +11,12 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='anedya-dev-sdk-python',
-    version='0.0.2',
+    version='0.0.2a1',
     description='Anedya python based SDK for IoT devices. This SDK is currently under development. Future versions may include breaking changes.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     author='Anedya Systems',
-    url='',
+    url='https://github.com/anedyaio/anedya-dev-sdk-pyhton',
     author_email='support@anedya.io',
     license="Apache License 2.0",
     packages=find_packages(where="src"),

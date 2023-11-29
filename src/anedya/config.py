@@ -1,4 +1,5 @@
 from enum import Enum
+import uuid
 
 class ConnectionMode(Enum):
     HTTP = "HTTP"
@@ -25,12 +26,22 @@ class AnedyaConfig:
         self.max_buffer_size = 10
         self.connection_key = None
         self.region = "ap-in-1"
+        self.connection_key = ""
+        self._deviceID = None
+        self.authmode = 'key'
 
     def set_connection_key(self, key):
         """
         Set a connection key
         """
         self.connection_key = key
+    
+    def set_deviceid(self, id: str):
+        """
+        Set DeviceID
+        """
+        self._deviceID = uuid.UUID(id)
+        self._deviceid_set = True
 
     def set_timeout(self, timeout):
         """
