@@ -24,7 +24,7 @@ class AnedyaClient:
         """
         headers = {'Content-type': 'application/json', 'Auth-mode': self._config.authmode, 'Authorization' : self._config.connection_key}
         r = requests.post("https://device." + self._config.region + ".anedya.io/v1/submitData", data=d.encodeJSON(), headers=headers)
-        print(r.json())
+        #print(r.json())
         if r.status_code != 200:
             jsonResponse = r.json()
             print(jsonResponse)
