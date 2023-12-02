@@ -1,20 +1,28 @@
+# Emulate Hardware Sensor?
+virtual_sensor = True
+# Set the ID of the physical device
+deviceID = '165ba802-8ea6-11ee-ba2e-57c37d9f47c1'
+# Set the binding secret for the device
+bindingSecret = 'cff8805084df2cc2159af5e230b155f7'
+
+# Note: It is assumed that the humidity sensor is attached at GPIO23 of the Raspberry Pi
+
+
 import anedya
 import time
-import board
-import adafruit_dht
-import psutil
+import random
 
-# Set the ID of the device
-deviceID = '165ba802-8ea6-11ee-ba2e-57c37d9f47c1'
-# Set the connection key for the device
-connectionKey = 'cff8805084df2cc2159af5e230b155f7'
+if not virtual_sensor:
+    import board
+    import adafruit_dht
+    import psutil
 
 def main():
     # Create a configuration object
     config = anedya.default_config()
     # Set the config parameters
     config.setdeviceid(deviceID)
-    config.setconnection_key(connectionKey)
+    config.setconnection_key(bindingSecret)
 
     # Configuration has been set, create an Anedya Client Instance
     client = anedya.AnedyaClient()
@@ -24,26 +32,31 @@ def main():
 
     # Client is set, now we can start collecting data
 
-    for proc in psutil.process_iter():
-        if proc.name() == 'libgpiod_pulsein' or proc.name() == 'libgpiod_pulsei':
-           proc.kill()
-    sensor = adafruit_dht.DHT11(board.D23)
+    if not virtual_sensor:
+        for proc in psutil.process_iter():
+            if proc.name() == 'libgpiod_pulsein' or proc.name() == 'libgpiod_pulsei':
+                proc.kill()
+        sensor = adafruit_dht.DHT11(board.D23)
 
     while True:
         # Fetch data from the sensor
         print('Fetching data from the sensor')
         # TODO
-        try:
-            temperature = sensor.temperature
-            humidity = sensor.humidity
-            #print("Temperature: {}*C   Humidity: {}% ".format(temp, humidity))
-        except RuntimeError as error:
-            print(error.args[0])
-            time.sleep(2.0)
-            continue
-        except Exception as error:
-            sensor.exit()
-            raise error
+        if not virtual_sensor:
+            try:
+                temperature = sensor.temperature
+                humidity = sensor.humidity
+                #print("Temperature: {}*C   Humidity: {}% ".format(temp, humidity))
+            except RuntimeError as error:
+                print(error.args[0])
+                time.sleep(2.0)
+                continue
+            except Exception as error:
+                sensor.exit()
+                raise error
+        else:
+            temperature = 23 + random.randrange(start=-5, stop=5, step=1) # Assign static value in case of virtual sensor
+            humidity = 63 + random.randrange(start=-10, stop=10, step=1) # Assign static value in case of virtual sensor
         print('Temperature: {t}C Humidity: {h}%'.format(t=temperature, h=humidity))
         # Create an Anedya Datapoint object
         dp1 = anedya.FloatData(name='temperature', timestamp=int(time.time()), value=temperature)
