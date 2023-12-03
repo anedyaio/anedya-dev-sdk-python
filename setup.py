@@ -1,7 +1,6 @@
 # setup.py
 
 from setuptools import setup, find_packages
-import os
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -21,7 +20,7 @@ setup(
     license="Apache License 2.0",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
-    python_requires=">=3.7, <4",
+    python_requires=">=3",
     install_requires=['requests'],  # Add any required dependencies here
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
