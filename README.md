@@ -1,5 +1,12 @@
 # Anedya SDK
 
+<p>
+    <a href="https://pypi.org/project/anedya-dev-sdk/">
+        <img alt="PyPI" src="https://img.shields.io/pypi/v/anedya-dev-sdk">
+    </a>
+</p>
+
+
 The **Anedya SDK** is a Python package designed to provide an easy-to-use interface for [Anedya](https://anedya.io) cloud services, which enables seamless connectivity and data retrieval from IoT devices. This SDK supports both MQTT and HTTP communication methods.
 
 This SDK wraps the Device APIs available in the [Anedya Documentation](https://docs.anedya.io)
