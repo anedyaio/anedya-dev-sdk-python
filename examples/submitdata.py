@@ -1,9 +1,9 @@
 # Emulate Hardware Sensor?
 virtual_sensor = True
 # Set the ID of the physical device
-deviceID = '165ba802-8ea6-11ee-ba2e-57c37d9f47c1'
+deviceID = '<DEVICE-UUID>'
 # Set the binding secret for the device
-bindingSecret = 'cff8805084df2cc2159af5e230b155f7'
+bindingSecret = '<NODE-BINDING-SECRET>'
 
 # Note: It is assumed that the humidity sensor is attached at GPIO23 of the Raspberry Pi
 
