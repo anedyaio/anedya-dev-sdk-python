@@ -29,6 +29,7 @@ class AnedyaConfig:
         self.connection_key = ""
         self._deviceID = None
         self.authmode = 'key'
+        self._testmode = False
 
     def setconnection_key(self, key):
         """

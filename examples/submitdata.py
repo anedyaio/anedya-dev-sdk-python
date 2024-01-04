@@ -26,7 +26,7 @@ def main():
 
     # Configuration has been set, create an Anedya Client Instance
     client = anedya.AnedyaClient()
-    client.SetConfig(config)
+    client.set_config(config)
 
     data = anedya.batch()
 
