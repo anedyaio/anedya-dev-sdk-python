@@ -3,7 +3,7 @@ from .config import *
 from .store import *
 
 class AnedyaClient:
-    def SetConfig(self, config: AnedyaConfig):
+    def set_config(self, config: AnedyaConfig):
         """
         Initialize the Anedya SDK.
 
@@ -23,7 +23,11 @@ class AnedyaClient:
         Send data to Anedya Cloud
         """
         headers = {'Content-type': 'application/json', 'Auth-mode': self._config.authmode, 'Authorization' : self._config.connection_key}
-        r = requests.post("https://device." + self._config.region + ".anedya.io/v1/submitData", data=d.encodeJSON(), headers=headers)
+        if self._config._testmode :
+            url = "https://device.stageapi.anedya.io/v1/submitData"
+        else:
+            url = "https://device." + self._config.region + ".anedya.io/v1/submitData"
+        r = requests.post(url, data=d.encodeJSON(), headers=headers)
         #print(r.json())
         if r.status_code != 200:
             jsonResponse = r.json()
