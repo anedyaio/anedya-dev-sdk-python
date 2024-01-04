@@ -10,7 +10,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="anedya-dev-sdk",
-    version="0.0.4",
+    version="0.0.5",
     description='Anedya python based SDK for IoT devices. This SDK is currently under development. Future versions may include breaking changes.',
     long_description=long_description,
     long_description_content_type="text/markdown",
