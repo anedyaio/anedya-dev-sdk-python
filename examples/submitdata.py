@@ -59,8 +59,9 @@ def main():
             humidity = 63 + random.randrange(start=-10, stop=10, step=1) # Assign static value in case of virtual sensor
         print('Temperature: {t}C Humidity: {h}%'.format(t=temperature, h=humidity))
         # Create an Anedya Datapoint object
-        dp1 = anedya.FloatData(name='temperature', timestamp=int(time.time()), value=temperature)
-        dp2 = anedya.FloatData(name='humidity', timestamp=int(time.time()), value=humidity)
+        # Note that the timestamp needs to be in Milliseconds
+        dp1 = anedya.FloatData(variable='temperature', timestamp_milli=int(time.time_ns()/1000000), value=temperature)
+        dp2 = anedya.FloatData(variable='humidity', timestamp_milli=int(time.time_ns()/1000000), value=humidity)
 
         # Append the data in a data store.
         data.append(dp1)
