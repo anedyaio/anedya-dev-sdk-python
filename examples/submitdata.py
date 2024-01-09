@@ -21,12 +21,11 @@ def main():
     # Create a configuration object
     config = anedya.default_config()
     # Set the config parameters
-    config.setdeviceid(deviceID)
-    config.setconnection_key(bindingSecret)
+    config.set_deviceid(deviceID)
+    config.set_connection_key(bindingSecret)
 
     # Configuration has been set, create an Anedya Client Instance
-    client = anedya.AnedyaClient()
-    client.set_config(config)
+    client = anedya.AnedyaClient(config)
 
     data = anedya.batch()
 

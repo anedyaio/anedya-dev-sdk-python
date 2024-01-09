@@ -31,26 +31,26 @@ class AnedyaConfig:
         self.authmode = 'key'
         self._testmode = False
 
-    def setconnection_key(self, key):
+    def set_connection_key(self, key):
         """
         Set a connection key
         """
         self.connection_key = key
     
-    def setdeviceid(self, id: str):
+    def set_deviceid(self, id: str):
         """
         Set DeviceID
         """
         self._deviceID = uuid.UUID(id)
         self._deviceid_set = True
 
-    def settimeout(self, timeout):
+    def set_timeout(self, timeout):
         """
         Set timeout for automatic flush of the data
         """
         self.timeout = timeout
 
-    def setmaxbuffersize(self, buffersize):
+    def set_maxbuffer_size(self, buffersize):
         """
         Set maximum buffer size
         """
