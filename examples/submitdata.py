@@ -1,9 +1,9 @@
 # Emulate Hardware Sensor?
 virtual_sensor = True
 # Set the ID of the physical device
-deviceID = '<DEVICE-UUID>'
+deviceID = '<PHYSICAL-DEVICE-UUID>'
 # Set the binding secret for the device
-bindingSecret = '<NODE-BINDING-SECRET>'
+connecttionKey = '<NODE-CONNECTION-KEY>'
 
 # Note: It is assumed that the humidity sensor is attached at GPIO23 of the Raspberry Pi
 
@@ -21,12 +21,11 @@ def main():
     # Create a configuration object
     config = anedya.default_config()
     # Set the config parameters
-    config.setdeviceid(deviceID)
-    config.setconnection_key(bindingSecret)
+    config.set_deviceid(deviceID)
+    config.set_connection_key(connecttionKey)
 
     # Configuration has been set, create an Anedya Client Instance
-    client = anedya.AnedyaClient()
-    client.set_config(config)
+    client = anedya.AnedyaClient(config)
 
     data = anedya.batch()
 
@@ -55,8 +54,8 @@ def main():
                 sensor.exit()
                 raise error
         else:
-            temperature = 23 + random.randrange(start=-5, stop=5, step=1) # Assign static value in case of virtual sensor
-            humidity = 63 + random.randrange(start=-10, stop=10, step=1) # Assign static value in case of virtual sensor
+            temperature = 23 + (random.randrange(start=-5, stop=5, step=1)/10) # Assign static value in case of virtual sensor
+            humidity = 63 + (random.randrange(start=-10, stop=10, step=1)/10) # Assign static value in case of virtual sensor
         print('Temperature: {t}C Humidity: {h}%'.format(t=temperature, h=humidity))
         # Create an Anedya Datapoint object
         # Note that the timestamp needs to be in Milliseconds
