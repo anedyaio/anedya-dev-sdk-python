@@ -2,7 +2,7 @@
 virtual_sensor = True
 # Set the ID of the physical device
 deviceID = '<PHYSICAL-DEVICE-UUID>'
-# Set the binding secret for the device
+# Set the connection key for the device
 connectionKey = '<NODE-CONNECTION-KEY>'
 
 # Note: It is assumed that the humidity sensor is attached at GPIO23 of the Raspberry Pi
@@ -59,6 +59,7 @@ def main():
         print('Temperature: {t}C Humidity: {h}%'.format(t=temperature, h=humidity))
         # Create an Anedya Datapoint object
         # Note that the timestamp needs to be in Milliseconds
+        # variable filed requires the identifiers provided during variable creation
         dp1 = anedya.FloatData(variable='temperature', timestamp_milli=int(time.time_ns()/1000000), value=temperature)
         dp2 = anedya.FloatData(variable='humidity', timestamp_milli=int(time.time_ns()/1000000), value=humidity)
 
