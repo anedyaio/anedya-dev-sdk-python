@@ -9,7 +9,7 @@ setup(
     long_description_content_type="text/markdown",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
-    install_requires=['requests', 'time', 'json'],  # Add any required dependencies here
+    install_requires=['requests'],  # Add any required dependencies here
     include_package_data=True,
     # Add if you have non-Python files to include
 )

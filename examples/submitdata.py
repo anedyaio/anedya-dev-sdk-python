@@ -3,7 +3,7 @@ virtual_sensor = True
 # Set the ID of the physical device
 deviceID = '<PHYSICAL-DEVICE-UUID>'
 # Set the binding secret for the device
-connecttionKey = '<NODE-CONNECTION-KEY>'
+connectionKey = '<NODE-CONNECTION-KEY>'
 
 # Note: It is assumed that the humidity sensor is attached at GPIO23 of the Raspberry Pi
 
@@ -22,7 +22,7 @@ def main():
     config = anedya.default_config()
     # Set the config parameters
     config.set_deviceid(deviceID)
-    config.set_connection_key(connecttionKey)
+    config.set_connection_key(connectionKey)
 
     # Configuration has been set, create an Anedya Client Instance
     client = anedya.AnedyaClient(config)
