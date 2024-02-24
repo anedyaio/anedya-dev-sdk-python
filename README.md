@@ -1,3 +1,7 @@
+<div style="width:20%; margin:0 auto;margin-bottom:50px;margin-top:50px;">
+<img src="https://cdn.anedya.io/android-chrome-512x512.png" style="width:50%; margin:0 auto;">
+</div>
+
 # Anedya SDK
 
 <p>
