@@ -1,3 +1,7 @@
+import anedya
+import time
+import random
+
 # Emulate Hardware Sensor?
 virtual_sensor = True
 # Set the ID of the physical device
@@ -7,15 +11,11 @@ connectionKey = '<NODE-CONNECTION-KEY>'
 
 # Note: It is assumed that the humidity sensor is attached at GPIO23 of the Raspberry Pi
 
-
-import anedya
-import time
-import random
-
 if not virtual_sensor:
     import board
     import adafruit_dht
     import psutil
+
 
 def main():
     # Create a configuration object
@@ -45,7 +45,7 @@ def main():
             try:
                 temperature = sensor.temperature
                 humidity = sensor.humidity
-                #print("Temperature: {}*C   Humidity: {}% ".format(temp, humidity))
+                # print("Temperature: {}*C   Humidity: {}% ".format(temp, humidity))
             except RuntimeError as error:
                 print(error.args[0])
                 time.sleep(2.0)
@@ -54,14 +54,14 @@ def main():
                 sensor.exit()
                 raise error
         else:
-            temperature = 23 + (random.randrange(start=-5, stop=5, step=1)/10) # Assign static value in case of virtual sensor
-            humidity = 63 + (random.randrange(start=-10, stop=10, step=1)/10) # Assign static value in case of virtual sensor
+            temperature = 23 + (random.randrange(start=-5, stop=5, step=1) / 10)  # Assign static value in case of virtual sensor
+            humidity = 63 + (random.randrange(start=-10, stop=10, step=1) / 10)  # Assign static value in case of virtual sensor
         print('Temperature: {t}C Humidity: {h}%'.format(t=temperature, h=humidity))
         # Create an Anedya Datapoint object
         # Note that the timestamp needs to be in Milliseconds
         # variable filed requires the identifiers provided during variable creation
-        dp1 = anedya.FloatData(variable='temperature', timestamp_milli=int(time.time_ns()/1000000), value=temperature)
-        dp2 = anedya.FloatData(variable='humidity', timestamp_milli=int(time.time_ns()/1000000), value=humidity)
+        dp1 = anedya.FloatData(variable='temperature', timestamp_milli=int(time.time_ns() / 1000000), value=temperature)
+        dp2 = anedya.FloatData(variable='humidity', timestamp_milli=int(time.time_ns() / 1000000), value=humidity)
 
         # Append the data in a data store.
         data.append(dp1)
@@ -75,7 +75,8 @@ def main():
             print('Error pushing data to the cloud!')
         # Clear all the data in the store before proceeding to next
         data.reset_datapoints()
-        time.sleep(15)        
+        time.sleep(15)
+
 
 if __name__ == "__main__":
     main()

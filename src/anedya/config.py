@@ -7,6 +7,11 @@ class ConnectionMode(Enum):
     MQTT = "MQTT"
 
 
+class MQTTMode(Enum):
+    TCP = "TCP"
+    WSS = "WSS"
+
+
 class Encoding(Enum):
     JSON = "JSON"
     CBOR = "CBOR"
@@ -26,7 +31,8 @@ class AnedyaConfig:
             tls_certificate (Optional[str]): Path to the TLS certificate file if using MQTT. Defaults to None.
         """
 
-        self.connection_mode = ConnectionMode.HTTP
+        self.connection_mode = ConnectionMode.MQTT
+        self.mqtt_mode = MQTTMode.TCP
         self.timeout = 60
         self.max_buffer_size = 10
         self.connection_key = None

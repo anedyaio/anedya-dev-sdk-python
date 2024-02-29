@@ -16,6 +16,13 @@
 
 from .config import AnedyaConfig
 from .errors import AnedyaInvalidConfig
+from .config import ConnectionMode
+from .config import MQTTMode
+from .client.certs import ANEDYA_CA_CERTS
+from ssl import SSLContext
+from paho.mqtt import client as mqtt
+from paho.mqtt.client import MQTTv311
+import ssl
 
 
 class AnedyaClient:
@@ -24,7 +31,28 @@ class AnedyaClient:
         self.set_config(config)
 
         # Internal Parameters
-        self._mqttclient = None
+        if config.connection_mode == ConnectionMode.MQTT:
+            print("setting up mqtt")
+            self._mqttclient = mqtt.Client(
+                callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
+                client_id=str(self._config._deviceID),
+                transport='websockets',
+                protocol=MQTTv311)
+            self._mqttclient.username_pw_set(username=str(self._config._deviceID), password=self._config.connection_key)
+            print(str(self._config._deviceID))
+            print(self._mqttclient)
+            self.on_connect = config.on_connect
+            self.on_disconnect = config.on_disconnect
+            self.on_message = config.on_message
+            self._mqttclient.on_connect = self.onconnect_handler
+            self._mqttclient.on_disconnect = self.ondisconnect_handler
+            self._mqttclient._connect_timeout = 1.0
+            # Set TLS Context
+            context = SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+            context.load_verify_locations(cadata=ANEDYA_CA_CERTS)
+            self._mqttclient.tls_set_context(context)
+        else:
+            self._mqttclient = None
         return
 
     def set_config(self, config: AnedyaConfig):
@@ -39,8 +67,24 @@ class AnedyaClient:
         if config._deviceid_set is False:
             raise AnedyaInvalidConfig('Configuration: need to set a valid Device ID')
         self._config = config
-        # Create
+        return
+
+    def anedya_connect(self):
+        if self._config.connection_mode == ConnectionMode.HTTP:
+            raise AnedyaInvalidConfig('Connection mode is HTTP, connect is not supported')
+        if self._config.mqtt_mode == MQTTMode.TCP:
+            print(self._mqttclient)
+            self._mqttclient.loop_start()
+            print("device." + self._config.region + ".anedya.io")
+            err = self._mqttclient.connect(host="device.ap-in-1.anedya.io", port=8804, keepalive=60)
+            print(err)
+        # Start the loop
+
+    def anedya_disconnect(self):
+        self._mqttclient.disconnect()
+        return
 
     from .client.bindDevice import bind_device
     from .client.submitData import submit_data
     from .client.timeSync import get_time
+    from .client.mqttHandlers import onconnect_handler, ondisconnect_handler
