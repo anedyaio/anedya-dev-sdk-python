@@ -38,10 +38,12 @@ class AnedyaClient:
                 client_id=str(self._config._deviceID),
                 transport='websockets',
                 protocol=MQTTv311)
-            self._mqttclient.username_pw_set(username=str(self._config._deviceID), password=self._config.connection_key)
+            self._mqttclient.username_pw_set(
+                username=str(self._config._deviceID),
+                password=self._config.connection_key)
             print(str(self._config._deviceID))
             print(self._mqttclient)
-            self.on_connect = config.on_connect
+            self.on_connectected = config.on_connected
             self.on_disconnect = config.on_disconnect
             self.on_message = config.on_message
             self._mqttclient.on_connect = self.onconnect_handler
@@ -63,24 +65,29 @@ class AnedyaClient:
             config (AnedyaConfig): Anedya SDK configuration.
         """
         if config.connection_key == "":
-            raise AnedyaInvalidConfig('Configuration: connection key can not be empty!')
+            raise AnedyaInvalidConfig(
+                'Configuration: connection key can not be empty!')
         if config._deviceid_set is False:
-            raise AnedyaInvalidConfig('Configuration: need to set a valid Device ID')
+            raise AnedyaInvalidConfig(
+                'Configuration: need to set a valid Device ID')
         self._config = config
         return
 
-    def anedya_connect(self):
+    def connect(self):
         if self._config.connection_mode == ConnectionMode.HTTP:
-            raise AnedyaInvalidConfig('Connection mode is HTTP, connect is not supported')
+            raise AnedyaInvalidConfig(
+                'Connection mode is HTTP, connect is not supported')
         if self._config.mqtt_mode == MQTTMode.TCP:
             print(self._mqttclient)
             self._mqttclient.loop_start()
             print("device." + self._config.region + ".anedya.io")
-            err = self._mqttclient.connect(host="device.ap-in-1.anedya.io", port=8804, keepalive=60)
+            err = self._mqttclient.connect(
+                host="device.ap-in-1.anedya.io", port=8804,
+                keepalive=60)
             print(err)
         # Start the loop
 
-    def anedya_disconnect(self):
+    def disconnect(self):
         self._mqttclient.disconnect()
         return
 

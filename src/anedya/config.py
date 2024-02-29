@@ -27,8 +27,10 @@ class AnedyaConfig:
             api_token (str): The API token for cloud service access.
             connection_mode (ConnectionMode): The mode for data transmission (HTTP or MQTT).
             timeout (int): Timeout duration (0 for instant push).
-            max_buffer_size (int): The maximum data buffer size (default or user-defined).
-            tls_certificate (Optional[str]): Path to the TLS certificate file if using MQTT. Defaults to None.
+            max_buffer_size (int): The maximum data buffer size (default
+            or user-defined).
+            tls_certificate (Optional[str]): Path to the TLS certificate file 
+            if using MQTT. Defaults to None.
         """
 
         self.connection_mode = ConnectionMode.MQTT
@@ -39,7 +41,7 @@ class AnedyaConfig:
         self.region = "ap-in-1"
         self.connection_key = ""
         self.authmode = 'key'
-        self.on_connect = None
+        self.on_connected = None
         self.on_disconnect = None
         self.on_message = None
 

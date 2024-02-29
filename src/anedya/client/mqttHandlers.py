@@ -1,8 +1,21 @@
+from ..errors import AnedyaInvalidCredentials, AnedyaRateLimitExceeded
+from ..errors import AnedyaException
+
 
 def onconnect_handler(self, client, userdata, flags, reason_code, properties):
-    if self.on_connect is not None:
+    rc = reason_code.value
+    if rc == 135:
+        raise AnedyaInvalidCredentials("Invalid credentials")
+    elif rc == 134:
+        raise AnedyaInvalidCredentials("Invalid Credentials")
+    elif rc == 159:
+        raise AnedyaRateLimitExceeded("Connection rate exceeded")
+    if rc != 0:
+        raise AnedyaException(
+            f"Connection failed with reason code {reason_code.getName()}")
+    if self.on_connected is not None and rc == 0:
         # Call the on_connect callback
-        self.on_connect(client, userdata, flags, reason_code, properties)
+        self.on_connected()
     return
 
 
