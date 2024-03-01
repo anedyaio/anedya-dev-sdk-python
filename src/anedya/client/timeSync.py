@@ -5,8 +5,10 @@ import requests
 
 def get_time(self):
     """
-    Get current time from Anedya Time Service using HTTP request - Gets current time using HTTP requests.
-    Accuracy is generally within few tens of millisecond. For greater accuracy consider using NTP time service from Anedya
+    Get current time from Anedya Time Service using HTTP request - 
+    Gets current time using HTTP requests.
+    Accuracy is generally within few tens of millisecond. For greater accuracy 
+    consider using NTP time service from Anedya
     """
     # print("called time API")
     if self._config._testmode:
@@ -22,7 +24,7 @@ def get_time(self):
     jsonResponse = r.json()
     # print(jsonResponse)
     if r.status_code != 200:
-        raise Exception(jsonResponse)
+        raise RuntimeError(jsonResponse)
     # Now compute the time from response
     ServerReceiveTime = jsonResponse["serverReceiveTime"]
     ServerSendTime = jsonResponse["serverSendTime"]

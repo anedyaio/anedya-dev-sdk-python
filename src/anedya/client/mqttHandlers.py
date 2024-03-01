@@ -13,9 +13,16 @@ def onconnect_handler(self, client, userdata, flags, reason_code, properties):
     if rc != 0:
         raise AnedyaException(
             f"Connection failed with reason code {reason_code.getName()}")
-    if self.on_connected is not None and rc == 0:
-        # Call the on_connect callback
-        self.on_connected()
+    if rc == 0:
+        topic_prefix = "$anedya/device/" + str(self._config._deviceID)
+        # Connection is successful, subscribe to the error and response topics.
+        self._mqttclient.subscribe(
+            topic=topic_prefix + "/errors", qos=1)
+        self._mqttclient.subscribe(
+            topic=topic_prefix + "/response", qos=1)
+        # Call the on_connect callback if it is not None
+        if self.on_connect is not None:
+            self.on_connect()
     return
 
 

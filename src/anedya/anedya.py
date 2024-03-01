@@ -21,7 +21,7 @@ from .config import MQTTMode
 from .client.certs import ANEDYA_CA_CERTS
 from ssl import SSLContext
 from paho.mqtt import client as mqtt
-from paho.mqtt.client import MQTTv311
+from paho.mqtt.client import MQTTv5
 import ssl
 
 
@@ -32,17 +32,15 @@ class AnedyaClient:
 
         # Internal Parameters
         if config.connection_mode == ConnectionMode.MQTT:
-            print("setting up mqtt")
+            # MQTT Related setup
             self._mqttclient = mqtt.Client(
                 callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
                 client_id=str(self._config._deviceID),
                 transport='websockets',
-                protocol=MQTTv311)
+                protocol=MQTTv5)
             self._mqttclient.username_pw_set(
                 username=str(self._config._deviceID),
                 password=self._config.connection_key)
-            print(str(self._config._deviceID))
-            print(self._mqttclient)
             self.on_connectected = config.on_connected
             self.on_disconnect = config.on_disconnect
             self.on_message = config.on_message
@@ -55,6 +53,8 @@ class AnedyaClient:
             self._mqttclient.tls_set_context(context)
         else:
             self._mqttclient = None
+        # Base URL setup
+            self._baseurl = "device." + self._config.region + ".anedya.io"
         return
 
     def set_config(self, config: AnedyaConfig):
