@@ -18,8 +18,10 @@ from .config import AnedyaConfig
 from .errors import AnedyaInvalidConfig
 from .config import ConnectionMode
 from .config import MQTTMode
+from .transaction import Transactions
 from .client.certs import ANEDYA_CA_CERTS
 from ssl import SSLContext
+import requests
 from paho.mqtt import client as mqtt
 from paho.mqtt.client import MQTTv5
 import ssl
@@ -47,14 +49,20 @@ class AnedyaClient:
             self._mqttclient.on_connect = self.onconnect_handler
             self._mqttclient.on_disconnect = self.ondisconnect_handler
             self._mqttclient._connect_timeout = 1.0
+            self._transactions = Transactions()
             # Set TLS Context
             context = SSLContext(ssl.PROTOCOL_TLS_CLIENT)
             context.load_verify_locations(cadata=ANEDYA_CA_CERTS)
             self._mqttclient.tls_set_context(context)
         else:
             self._mqttclient = None
+            self._httpsession = requests.Session()
         # Base URL setup
             self._baseurl = "device." + self._config.region + ".anedya.io"
+            headers = {'Content-type': 'application/json',
+                       'Auth-mode': self._config.authmode,
+                       'Authorization': self._config.connection_key}
+            self._httpsession.headers.update(headers)
         return
 
     def set_config(self, config: AnedyaConfig):
