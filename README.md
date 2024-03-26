@@ -6,7 +6,7 @@
 
 <p>
     <a href="https://pypi.org/project/anedya-dev-sdk/">
-        <img alt="PyPI" src="https://img.shields.io/pypi/v/anedya-dev-sdk">
+        <img alt="PyPI" src="https://img.shields.io/pypi/v/anedya-dev-sdk?style=for-the-badge">
     </a>
 </p>
 
