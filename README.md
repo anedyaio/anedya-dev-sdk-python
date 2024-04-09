@@ -1,11 +1,4 @@
-<p>
-    <a href="https://pypi.org/project/anedya-dev-sdk/">
-        <img alt="PyPI" src="https://img.shields.io/pypi/v/anedya-dev-sdk?style=for-the-badge">
-    </a>&nbsp;
-    <a href="https://docs.anedya.io?utm_source=github&utm_medium=link&utm_campaign=github-sdk&utm_content=python">
-        <img alt="Anedya Documentation" src="https://img.shields.io/badge/Anedya-Documentation-blue?style=for-the-badge">
-    </a>
-</p>
+[<img alt="PyPI" src="https://img.shields.io/pypi/v/anedya-dev-sdk?style=for-the-badge">](https://pypi.org/project/anedya-dev-sdk/)&nbsp;&nbsp;[<img alt="Anedya Documentation" src="https://img.shields.io/badge/Anedya-Documentation-blue?style=for-the-badge">](https://docs.anedya.io?utm_source=github&utm_medium=link&utm_campaign=github-sdk&utm_content=python)
 
 
  <!---<div style="width:20%; margin:0 auto;margin-bottom:50px;margin-top:50px;">-->
