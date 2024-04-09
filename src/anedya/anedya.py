@@ -14,16 +14,57 @@
    limitations under the License.
 """
 
+from .config import AnedyaConfig
+from .errors import AnedyaInvalidConfig
+from .config import ConnectionMode
+from .config import MQTTMode
+from .transaction import Transactions
+from .client.certs import ANEDYA_CA_CERTS
+from ssl import SSLContext
 import requests
-import time
-import json
-from .config import *
-from .store import *
+from paho.mqtt import client as mqtt
+from paho.mqtt.client import MQTTv5
+import ssl
+
 
 class AnedyaClient:
 
     def __init__(self, config: AnedyaConfig):
         self.set_config(config)
+
+        # Internal Parameters
+        if config.connection_mode == ConnectionMode.MQTT:
+            # MQTT Related setup
+            self._mqttclient = mqtt.Client(
+                callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
+                client_id=str(self._config._deviceID),
+                transport='websockets',
+                protocol=MQTTv5)
+            self._mqttclient.username_pw_set(
+                username=str(self._config._deviceID),
+                password=self._config.connection_key)
+            self.on_connect = config.on_connect
+            self.on_disconnect = config.on_disconnect
+            self.on_message = config.on_message
+            self._mqttclient.on_connect = self.onconnect_handler
+            self._mqttclient.on_disconnect = self.ondisconnect_handler
+            # self._mqttclient.on_message = self.onmessage_handler
+            self._mqttclient._connect_timeout = 1.0
+            self._transactions = Transactions()
+            # Set TLS Context
+            context = SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+            context.load_verify_locations(cadata=ANEDYA_CA_CERTS)
+            # self._mqttclient.tls_set()
+            self._mqttclient.tls_set_context(context)
+        else:
+            self._mqttclient = None
+        self._httpsession = requests.Session()
+        # Base URL setup
+        self._baseurl = "device." + self._config.region + ".anedya.io"
+        headers = {'Content-type': 'application/json',
+                   'Auth-mode': self._config.authmode,
+                   'Authorization': self._config.connection_key}
+        self._httpsession.headers.update(headers)
         return
 
     def set_config(self, config: AnedyaConfig):
@@ -34,71 +75,34 @@ class AnedyaClient:
             config (AnedyaConfig): Anedya SDK configuration.
         """
         if config.connection_key == "":
-            raise ValueError('Configuration: connection key can not be empty!')
-        if config._deviceid_set == False:
-            raise ValueError('Configuration: need to set a valid Device ID')
+            raise AnedyaInvalidConfig(
+                'Configuration: connection key can not be empty!')
+        if config._deviceid_set is False:
+            raise AnedyaInvalidConfig(
+                'Configuration: need to set a valid Device ID')
         self._config = config
-        # Create 
-        
-    def bind_device(self, binding_secret: str):
-        """
-        Bind device to Anedya Cloud
-        """
-        headers = {'Content-type': 'application/json', 'Auth-mode': self._config.authmode, 'Authorization' : self._config.connection_key}
-        if self._config._testmode :
-            url = "https://device.stageapi.anedya.io/v1/submitData"
-        else:
-            url = "https://device." + self._config.region + ".anedya.io/v1/bindDevice/json"
-        requestPayload = {"bindingsecret" : binding_secret, "deviceid" : str(self._config._deviceID)}
-        r = requests.post(url, data=json.dumps(requestPayload), headers=headers)
-        jsonResponse = r.json()
-        if r.status_code != 200:
-            raise Exception(jsonResponse)
-        # Check whether the call was successful or not
-        if jsonResponse["success"] != True:
-            raise Exception(jsonResponse)
-        return True
-    
-    def submit_data(self, d: batch):
-        """
-        Send data to Anedya Cloud
-        """
-        headers = {'Content-type': 'application/json', 'Auth-mode': self._config.authmode, 'Authorization' : self._config.connection_key}
-        if self._config._testmode :
-            url = "https://device.stageapi.anedya.io/v1/submitData"
-        else:
-            url = "https://device." + self._config.region + ".anedya.io/v1/submitData"
-        r = requests.post(url, data=d.encodeJSON(), headers=headers)
-        #print(r.json())
-        if r.status_code != 200:
-            jsonResponse = r.json()
-            print(jsonResponse)
-            return False
-        return True
-    
-    def get_time_http(self):
-        """
-        Get current time from Anedya Time Service using HTTP request - Gets current time using HTTP requests.
-        Accuracy is generally within few tens of millisecond. For greater accuracy consider using NTP time service from Anedya
-        """
-        #print("called time API")
-        if self._config._testmode :
-            url = "https://device.stageapi.anedya.io/v1/time"
-        else:
-            url = "https://device." + self._config.region + ".anedya.io/v1/time"
-        deviceSendTime = int(time.time_ns()/1000000)
-        requestPayload = {"deviceSendTime" : deviceSendTime}
-        #print(json.dumps(requestPayload))
-        headers = {'Content-type': 'application/json'}
-        r = requests.post(url, data=json.dumps(requestPayload), headers=headers)
-        deviceRecTime = int(time.time_ns()/1000000)
-        jsonResponse = r.json()
-        #print(jsonResponse)
-        if r.status_code != 200:
-            raise Exception(jsonResponse)
-        # Now compute the time from response
-        ServerReceiveTime = jsonResponse["serverReceiveTime"]
-        ServerSendTime = jsonResponse["serverSendTime"]
-        currentTime = (ServerReceiveTime + ServerSendTime + deviceRecTime - deviceSendTime)/2
-        return currentTime
-        
+        return
+
+    def connect(self):
+        if self._config.connection_mode == ConnectionMode.HTTP:
+            raise AnedyaInvalidConfig(
+                'Connection mode is HTTP, connect is not supported')
+        if self._config.mqtt_mode == MQTTMode.TCP:
+            print(self._mqttclient)
+            self._mqttclient.loop_start()
+            print("device." + self._config.region + ".anedya.io")
+            err = self._mqttclient.connect(
+                host="device.ap-in-1.anedya.io", port=8804,
+                keepalive=60)
+            print(err)
+        # Start the loop
+
+    def disconnect(self):
+        self._mqttclient.disconnect()
+        return
+
+    from .client.bindDevice import bind_device
+    from .client.submitData import submit_data
+    from .client.timeSync import get_time
+    from .client.mqttHandlers import onconnect_handler, ondisconnect_handler
+    from .client.callbacks import _error_callback, _response_callback
