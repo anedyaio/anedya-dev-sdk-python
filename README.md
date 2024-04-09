@@ -2,6 +2,7 @@
     <a href="https://pypi.org/project/anedya-dev-sdk/">
         <img alt="PyPI" src="https://img.shields.io/pypi/v/anedya-dev-sdk?style=for-the-badge">
     </a>
+     
     <a href="https://docs.anedya.io?utm_source=github&utm_medium=link&utm_campaign=github-sdk&utm_content=python">
         <img alt="Anedya Documentation" src="https://img.shields.io/badge/Anedya-Documentation-blue?style=for-the-badge">
     </a>
