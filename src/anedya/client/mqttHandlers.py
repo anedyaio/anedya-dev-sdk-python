@@ -17,9 +17,19 @@ def onconnect_handler(self, client, userdata, flags, reason_code, properties):
         topic_prefix = "$anedya/device/" + str(self._config._deviceID)
         # Connection is successful, subscribe to the error and response topics.
         self._mqttclient.subscribe(
-            topic=topic_prefix + "/errors", qos=1)
+            topic=topic_prefix + "/errors", qos=0)
         self._mqttclient.subscribe(
-            topic=topic_prefix + "/response", qos=1)
+            topic=topic_prefix + "/response", qos=0)
+        self._mqttclient.subscribe(
+            topic=topic_prefix + "/command", qos=0)
+        # Define all Callbacks for error and response
+        # Callback for errors
+        print("Adding Callbacks")
+        self._mqttclient.message_callback_add(sub=topic_prefix + "/errors", callback=self._error_callback)
+        # Callback for response
+        self._mqttclient.message_callback_add(sub=topic_prefix + "/response", callback=self._response_callback)
+        # Callback for command
+
         # Call the on_connect callback if it is not None
         if self.on_connect is not None:
             self.on_connect()

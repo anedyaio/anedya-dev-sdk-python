@@ -43,3 +43,22 @@ class AnedyaException(Exception):
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)
+
+
+class AnedyaInvalidTransaction(Exception):
+    """
+    Raised when an invalid transaction is passed
+    """
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
+
+class AnedyaTxFailure(Exception):
+    """
+    Raised when a transaction fails
+    """
+    def __init__(self, message, code):
+        self.message = message
+        self.code = code
+        super().__init__(self.message)

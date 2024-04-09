@@ -43,26 +43,28 @@ class AnedyaClient:
             self._mqttclient.username_pw_set(
                 username=str(self._config._deviceID),
                 password=self._config.connection_key)
-            self.on_connectected = config.on_connected
+            self.on_connect = config.on_connect
             self.on_disconnect = config.on_disconnect
             self.on_message = config.on_message
             self._mqttclient.on_connect = self.onconnect_handler
             self._mqttclient.on_disconnect = self.ondisconnect_handler
+            # self._mqttclient.on_message = self.onmessage_handler
             self._mqttclient._connect_timeout = 1.0
             self._transactions = Transactions()
             # Set TLS Context
             context = SSLContext(ssl.PROTOCOL_TLS_CLIENT)
             context.load_verify_locations(cadata=ANEDYA_CA_CERTS)
+            # self._mqttclient.tls_set()
             self._mqttclient.tls_set_context(context)
         else:
             self._mqttclient = None
-            self._httpsession = requests.Session()
+        self._httpsession = requests.Session()
         # Base URL setup
-            self._baseurl = "device." + self._config.region + ".anedya.io"
-            headers = {'Content-type': 'application/json',
-                       'Auth-mode': self._config.authmode,
-                       'Authorization': self._config.connection_key}
-            self._httpsession.headers.update(headers)
+        self._baseurl = "device." + self._config.region + ".anedya.io"
+        headers = {'Content-type': 'application/json',
+                   'Auth-mode': self._config.authmode,
+                   'Authorization': self._config.connection_key}
+        self._httpsession.headers.update(headers)
         return
 
     def set_config(self, config: AnedyaConfig):
@@ -103,3 +105,4 @@ class AnedyaClient:
     from .client.submitData import submit_data
     from .client.timeSync import get_time
     from .client.mqttHandlers import onconnect_handler, ondisconnect_handler
+    from .client.callbacks import _error_callback, _response_callback

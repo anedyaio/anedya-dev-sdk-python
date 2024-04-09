@@ -1,9 +1,9 @@
-from ..errors import AnedyaInvalidConfig
+from ..errors import AnedyaInvalidConfig, AnedyaTxFailure
 from ..config import ConnectionMode
 from ..models import DataPoints, SubmitDataMQTTReq
 
 
-def submit_data(self, data: DataPoints):
+def submit_data(self, data: DataPoints, timeout: int = 1000):
     """
     Send data to Anedya Cloud
     """
@@ -44,10 +44,19 @@ def _submit_data_mqtt(self, data: DataPoints):
     d = SubmitDataMQTTReq(tr.get_id(), data)
     payload = d.encodeJSON()
     # Publish the message
+    print(payload)
     topic_prefix = "$anedya/device/" + str(self._config._deviceID)
-    self._mqttclient.publish(topic=topic_prefix + "/submitData/json",
+    print(topic_prefix + "/submitData/json")
+    self._mqttclient.publish(topic=topic_prefix + "/submitdata/json",
                              payload=payload, qos=1)
     # Wait for transaction to complete
-
+    tr.wait_to_complete()
+    # Transaction completed
+    # Get the data from the transaction
+    data = tr.get_data()
     # Clear transaction
+    self._transactions.clear_transaction(tr)
+    # Check if transaction is successful or not
+    if data['success'] is not True:
+        raise AnedyaTxFailure(data['error'], data['errCode'])
     return

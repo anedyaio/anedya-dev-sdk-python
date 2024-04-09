@@ -41,7 +41,7 @@ class AnedyaConfig:
         self.region = "ap-in-1"
         self.connection_key = ""
         self.authmode = 'key'
-        self.on_connected = None
+        self.on_connect = None
         self.on_disconnect = None
         self.on_message = None
 
