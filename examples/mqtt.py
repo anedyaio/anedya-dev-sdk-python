@@ -3,8 +3,8 @@ import time
 
 config = anedya.default_config()
 config.connection_mode = anedya.ConnectionMode.MQTT
-config.set_deviceid("67719273-7cfe-4726-a846-72ca86340916")
-config.set_connection_key("7346b841bc8cf7fe39555ae19654612b")
+config.set_deviceid("<SET-DEVICE-ID>")
+config.set_connection_key("<SET-CONNECTION-KEY>")
 
 # Create a client
 client = anedya.AnedyaClient(config)
