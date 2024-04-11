@@ -1,24 +1,17 @@
 from ..errors import AnedyaInvalidConfig, AnedyaTxFailure
 from ..config import ConnectionMode
 from ..models import DataPoints, SubmitDataMQTTReq
+import json
 
 
 def submit_data(self, data: DataPoints, timeout: float | None = None):
     """
-    Send data to Anedya Cloud
+    :param data: Data to send as a :class: DataPoints object
+    :param timeout: Timeout in seconds, default is None
 
-    Parameters
-    ----------
-    data : DataPoints
-        Data to send
-    timeout : float | None, optional
-        Timeout in seconds, by default None. All production ready code should use timeout, without timeout
-        your code will hang indefinitely untill data is submitted. Bydefault this method does not time out
+    :raises AnedyaTxFailure: If data could not be submitted due to an error
 
-    Exceptions
-    ----------
-    AnedyaTxFailure: 
-        Raised when data could not be submitted due to some error
+    This function sends data to the Anedya Cloud platform. It determines the connection mode from the SDK configuration and calls the appropriate submit data method (_submit_data_http or _submit_data_mqtt).
     """
 
     if self._config is None:
@@ -38,11 +31,14 @@ def _submit_data_http(self, data: DataPoints, timeout: float | None = None):
         url = self._baseurl + "/v1/submitData"
     r = self._httpsession.post(url, data=data.encodeJSON(), timeout=timeout)
     # print(r.json())
-    if r.status_code != 200:
+    try:
         jsonResponse = r.json()
-        print(jsonResponse)
-        return False
-    return True
+        payload = json.loads(jsonResponse)
+        if payload['success'] is not True:
+            raise AnedyaTxFailure(payload['error'], payload['errCode'])
+    except ValueError:
+        raise AnedyaTxFailure(message="Invalid JSON response")
+    return
 
 
 def _submit_data_mqtt(self, data: DataPoints, timeout: float | None = None):
