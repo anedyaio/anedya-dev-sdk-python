@@ -1,5 +1,8 @@
 import json
 import time
+import uuid
+import base64
+import datetime
 
 
 class FloatData:
@@ -70,6 +73,22 @@ class LogsCache:
     def encodeJSON(self):
         data = json.dumps(self, cls=AnedyaEncoder)
         return data
+
+
+class CommandMessage:
+    def __init__(self, commandMsg: dict):
+        self.command = commandMsg["command"]
+        self.id = uuid.UUID(commandMsg["id"])
+        if type == "string":
+            self.data = commandMsg["data"]
+        elif type == "binary":
+            base64_bytes = commandMsg["data"].encode("ascii")
+            data_bytes = base64.b64decode(base64_bytes)
+            self.data = data_bytes
+        else:
+            raise Exception("Invalid datatype")
+        self.type = commandMsg["type"]
+        self.exp = datetime.datetime.fromtimestamp(commandMsg["exp"] / 1000)
 
 
 class AnedyaEncoder(json.JSONEncoder):
