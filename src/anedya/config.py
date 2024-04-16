@@ -1,5 +1,6 @@
 from enum import Enum
 import uuid
+from .errors import AnedyaInvalidConfig
 
 
 class ConnectionMode(Enum):
@@ -61,7 +62,10 @@ class AnedyaConfig:
         """
         Set DeviceID
         """
-        self._deviceID = uuid.UUID(id)
+        try:
+            self._deviceID = uuid.UUID(id)
+        except ValueError:
+            raise AnedyaInvalidConfig("Device ID needs to be valid UUID")
         self._deviceid_set = True
 
     def set_timeout(self, timeout):
