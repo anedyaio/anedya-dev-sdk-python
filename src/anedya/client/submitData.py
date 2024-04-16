@@ -1,6 +1,6 @@
 from ..errors import AnedyaInvalidConfig, AnedyaTxFailure
 from ..config import ConnectionMode
-from ..models import DataPoints, SubmitDataMQTTReq
+from ..models import DataPoints, AnedyaEncoder
 import json
 
 
@@ -48,9 +48,9 @@ def _submit_data_mqtt(self, data: DataPoints, timeout: float | None = None):
     d = SubmitDataMQTTReq(tr.get_id(), data)
     payload = d.encodeJSON()
     # Publish the message
-    print(payload)
+    # print(payload)
     topic_prefix = "$anedya/device/" + str(self._config._deviceID)
-    print(topic_prefix + "/submitData/json")
+    # print(topic_prefix + "/submitData/json")
     msginfo = self._mqttclient.publish(topic=topic_prefix + "/submitdata/json",
                                        payload=payload, qos=1)
     try:
@@ -70,3 +70,20 @@ def _submit_data_mqtt(self, data: DataPoints, timeout: float | None = None):
     if data['success'] is not True:
         raise AnedyaTxFailure(data['error'], data['errCode'])
     return
+
+
+class SubmitDataMQTTReq:
+    def __init__(self, reqID: str, data: DataPoints):
+        self.data = data
+        self.reqID = reqID
+
+    def toJSON(self):
+        dict = {
+            "reqId": self.reqID,
+            "data": self.data.data
+        }
+        return dict
+
+    def encodeJSON(self):
+        data = json.dumps(self, cls=AnedyaEncoder)
+        return data

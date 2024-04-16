@@ -1,11 +1,40 @@
 import json
+import time
+
+
+class FloatData:
+    def __init__(self, variable: str, value: float, timestamp_milli: int = int(time.time_ns() / 1000000)):
+        self.variable = variable
+        self.timestamp = timestamp_milli
+        self.value = value
+
+    def toJSON(self):
+        dict = {
+            "variable": self.variable,
+            "timestamp": self.timestamp,
+            "value": self.value
+        }
+        return dict
+
+
+class Log:
+    def __init__(self, log: str, timestamp_milli: int = int(time.time_ns() / 1000000)):
+        self.log = log
+        self.timestamp = timestamp_milli
+
+    def toJSON(self):
+        dict = {
+            "log": self.log,
+            "timestamp": self.timestamp
+        }
+        return dict
 
 
 class DataPoints:
     def __init__(self):
         self.data = []
 
-    def append(self, datapoint):
+    def append(self, datapoint: FloatData):
         self.data.append(datapoint)
 
     def toJSON(self):
@@ -22,17 +51,21 @@ class DataPoints:
         return data
 
 
-class SubmitDataMQTTReq:
-    def __init__(self, reqID: str, data: DataPoints):
-        self.data = data
-        self.reqID = reqID
+class LogsCache:
+    def __init__(self):
+        self.logs = []
+
+    def append(self, log: Log):
+        self.logs.append(log)
 
     def toJSON(self):
         dict = {
-            "reqId": self.reqID,
-            "data": self.data.data
+            "data": self.logs
         }
         return dict
+
+    def reset_logs(self):
+        self.logs = []
 
     def encodeJSON(self):
         data = json.dumps(self, cls=AnedyaEncoder)
@@ -45,18 +78,3 @@ class AnedyaEncoder(json.JSONEncoder):
             return obj.toJSON()
         else:
             return json.JSONEncoder.default(self, obj)
-
-
-class FloatData:
-    def __init__(self, variable: str, timestamp_milli: int, value: float):
-        self.variable = variable
-        self.timestamp = timestamp_milli
-        self.value = value
-
-    def toJSON(self):
-        dict = {
-            "variable": self.variable,
-            "timestamp": self.timestamp,
-            "value": self.value
-        }
-        return dict
