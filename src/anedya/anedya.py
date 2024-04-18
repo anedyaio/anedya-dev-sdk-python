@@ -46,8 +46,8 @@ class AnedyaClient:
             self.on_connect = config.on_connect
             self.on_disconnect = config.on_disconnect
             self.on_message = config.on_message
-            self._mqttclient.on_connect = self.onconnect_handler
-            self._mqttclient.on_disconnect = self.ondisconnect_handler
+            self._mqttclient.on_connect = self._onconnect_handler
+            self._mqttclient.on_disconnect = self._ondisconnect_handler
             # self._mqttclient.on_message = self.onmessage_handler
             self._mqttclient._connect_timeout = 1.0
             self._transactions = Transactions()
@@ -103,6 +103,7 @@ class AnedyaClient:
 
     from .client.bindDevice import bind_device
     from .client.submitData import submit_data
+    from .client.submitLogs import submit_logs
     from .client.timeSync import get_time
-    from .client.mqttHandlers import onconnect_handler, ondisconnect_handler
+    from .client.mqttHandlers import _onconnect_handler, _ondisconnect_handler
     from .client.callbacks import _error_callback, _response_callback

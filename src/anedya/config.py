@@ -1,6 +1,7 @@
 from enum import Enum
 import uuid
 from .errors import AnedyaInvalidConfig
+from typing import Callable
 
 
 class ConnectionMode(Enum):
@@ -16,6 +17,10 @@ class MQTTMode(Enum):
 class Encoding(Enum):
     JSON = "JSON"
     CBOR = "CBOR"
+
+
+class RegionCode(Enum):
+    AP_IN_1 = "ap-in-1"
 
 
 class AnedyaConfig:
@@ -52,15 +57,24 @@ class AnedyaConfig:
         self._security_set = False
         self._testmode = False
 
-    def set_connection_key(self, key):
+    def set_connection_key(self, key: str):
         """
-        Set a connection key
+        This method sets the connection key for the client
+
+        Args:
+            key (str): Connection key for the client
         """
         self.connection_key = key
 
     def set_deviceid(self, id: str):
         """
-        Set DeviceID
+        This method sets the device ID for the client
+
+        Args:
+            id (str): A Unique physical device ID which should not change for the entire lifetime of the device. Requires a valid UUID
+
+        Raises:
+            AnedyaInvalidConfig: The provided device ID should be a valid UUID, otherwise this exception will be raised
         """
         try:
             self._deviceID = uuid.UUID(id)
@@ -68,41 +82,33 @@ class AnedyaConfig:
             raise AnedyaInvalidConfig("Device ID needs to be valid UUID")
         self._deviceid_set = True
 
-    def set_timeout(self, timeout):
+    def set_region(self, region: RegionCode):
         """
-        Set timeout for automatic flush of the data
-        """
-        self.timeout = timeout
+        This method sets the region for the client
 
-    def set_maxbuffer_size(self, buffersize):
-        """
-        Set maximum buffer size
-        """
-        self.max_buffer_size = buffersize
-
-    def set_region(self, region):
-        """
-        Set region
+        Args:
+            region (RegionCode): Set the regioncode where your Anedya project is created.
         """
         self.region = region
 
-    def set_on_connect(self, callback):
+    def set_on_connect(self, callback: Callable[[],]):
         """
-        Set on connect callback
+        You can use this function to set a callback function that will be called when the connection is established.
+
+        Args:
+            callback (Callable[[],]): A function which will be called when the connection is established. Please note that callback functions should not be blocking.
         """
         self.on_connect = callback
 
-    def set_on_disconnect(self, callback):
+    def set_on_disconnect(self, callback: Callable[[],]):
         """
-        Set on disconnect callback
+        You can use this function to set a callback function that will be called when the connection is disconnected. This callback will be called for both intentional
+        and unintentional disconnections.
+
+        Args:
+            callback (Callable[[],]): A function which will be called when the connection is disconnected. Please note that callback functions should not be blocking.
         """
         self.on_disconnect = callback
-
-    def set_on_message(self, callback):
-        """
-        Set on message callback
-        """
-        self.on_message = callback
 
 
 def default_config():

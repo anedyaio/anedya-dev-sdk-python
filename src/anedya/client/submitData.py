@@ -6,12 +6,15 @@ import json
 
 def submit_data(self, data: DataPoints, timeout: float | None = None):
     """
-    :param data: Data to send as a :class: DataPoints object
-    :param timeout: Timeout in seconds, default is None
+    Submit data to Anedya Platform.
 
-    :raises AnedyaTxFailure: If data could not be submitted due to an error
+    Args:
+        data (DataPoints): Datapoints object, you can submit multiple types of variable in single request.
+        timeout (float | None, optional): Time out in seconds for the request. In production setup it is advisable to use a timeout or else your program can get stuck indefinitely. Defaults to None.
 
-    This function sends data to the Anedya Cloud platform. It determines the connection mode from the SDK configuration and calls the appropriate submit data method (_submit_data_http or _submit_data_mqtt).
+    Raises:
+        AnedyaInvalidConfig: Method can raise this method if either configuration is not provided or if the connection mode is invalid.
+        AnedyaTxFailure: Method can raise this method if the transaction fails.
     """
 
     if self._config is None:

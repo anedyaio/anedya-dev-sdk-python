@@ -7,6 +7,14 @@ import datetime
 
 class FloatData:
     def __init__(self, variable: str, value: float, timestamp_milli: int = int(time.time_ns() / 1000000)):
+        """
+        Create a Float datapoint object which can be sent to Anedya Server
+
+        Args:
+            variable (str): Name of the variable
+            value (float): Value of the variable
+            timestamp_milli (int, optional): Timestamp in millisecond unix epoch. Defaults to current time. Pass 0 to take Anedya Server Time
+        """
         self.variable = variable
         self.timestamp = timestamp_milli
         self.value = value
@@ -22,6 +30,13 @@ class FloatData:
 
 class Log:
     def __init__(self, log: str, timestamp_milli: int = int(time.time_ns() / 1000000)):
+        """
+        Create a Log object which can be sent to Anedya Server
+
+        Args:
+            log (str): Log string that you want to send to Anedya
+            timestamp_milli (int, optional): Timestamp in millisecond unix epoch. Defaults to current time. Pass 0 to take Anedya Server Time
+        """
         self.log = log
         self.timestamp = timestamp_milli
 
@@ -38,6 +53,12 @@ class DataPoints:
         self.data = []
 
     def append(self, datapoint: FloatData):
+        """
+        Append a datapoint to the datapoints batch which will be sent to Anedya Server in a single request
+
+        Args:
+            datapoint (FloatData): Datapoint object
+        """
         self.data.append(datapoint)
 
     def toJSON(self):
@@ -59,6 +80,12 @@ class LogsCache:
         self.logs = []
 
     def append(self, log: Log):
+        """
+        Append a log to the log batch which will be sent to Anedya Server in a single request
+
+        Args:
+            log (Log): Log object
+        """
         self.logs.append(log)
 
     def toJSON(self):

@@ -4,12 +4,19 @@ import json
 import time
 
 
-def get_time(self, timeout: float | None = None):
+def get_time(self, timeout: float | None = None) -> int:
     """
-    Get current time from Anedya Time Service using HTTP request - 
-    Gets current time using HTTP requests.
-    Accuracy is generally within few tens of millisecond. For greater accuracy 
-    consider using NTP time service from Anedya
+    Fetch the time information from Anedya.
+
+    Args:
+        timeout (float | None, optional): Time out in seconds for the request. In production setup it is advisable to use a timeout or else your program can get stuck indefinitely. Defaults to None.
+
+    Raises:
+        AnedyaInvalidConfig: Method can raise this method if either configuration is not provided or if the connection mode is invalid.
+        AnedyaTxFailure: Method can raise this method if the transaction fails.
+
+    Returns:
+        int: The method returns the current time in Unix millisecond epoch in UTC timezone
     """
     if self._config is None:
         raise AnedyaInvalidConfig('Configuration not provided')
@@ -36,9 +43,9 @@ def _time_sync_http(self, timeout: float | None = None):
         if payload['success'] is not True:
             raise AnedyaTxFailure(payload['error'], payload['errCode'])
         deviceRecTime = int(time.time_ns() / 1000000)
-        ServerReceiveTime = jsonResponse["serverReceiveTime"]
-        ServerSendTime = jsonResponse["serverSendTime"]
-        currentTime = (ServerReceiveTime + ServerSendTime + deviceRecTime - deviceSendTime) / 2
+        ServerReceiveTime = int(jsonResponse["serverReceiveTime"])
+        ServerSendTime = int(jsonResponse["serverSendTime"])
+        currentTime = int((ServerReceiveTime + ServerSendTime + deviceRecTime - deviceSendTime) / 2)
     except ValueError:
         raise AnedyaTxFailure(message="Invalid JSON response")
     return currentTime
