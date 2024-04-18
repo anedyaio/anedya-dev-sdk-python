@@ -2,7 +2,7 @@ from ..errors import AnedyaInvalidCredentials, AnedyaRateLimitExceeded
 from ..errors import AnedyaException
 
 
-def onconnect_handler(self, client, userdata, flags, reason_code, properties):
+def _onconnect_handler(self, client, userdata, flags, reason_code, properties):
     rc = reason_code.value
     if rc == 135:
         raise AnedyaInvalidCredentials("Invalid credentials")
@@ -36,12 +36,12 @@ def onconnect_handler(self, client, userdata, flags, reason_code, properties):
     return
 
 
-def ondisconnect_handler(self,
-                         client,
-                         userdata,
-                         disconnect_flags,
-                         reason_code,
-                         properties):
+def _ondisconnect_handler(self,
+                          client,
+                          userdata,
+                          disconnect_flags,
+                          reason_code,
+                          properties):
     # First call the disconnect handler callback
     if self.on_disconnect is not None:
         self.on_disconnect(client,
