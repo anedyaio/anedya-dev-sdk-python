@@ -45,7 +45,7 @@ class AnedyaClient:
                 password=self._config.connection_key)
             self.on_connect = config.on_connect
             self.on_disconnect = config.on_disconnect
-            self.on_message = config.on_message
+            self.on_command = config.on_command
             self._mqttclient.on_connect = self._onconnect_handler
             self._mqttclient.on_disconnect = self._ondisconnect_handler
             # self._mqttclient.on_message = self.onmessage_handler
@@ -106,4 +106,4 @@ class AnedyaClient:
     from .client.submitLogs import submit_logs
     from .client.timeSync import get_time
     from .client.mqttHandlers import _onconnect_handler, _ondisconnect_handler
-    from .client.callbacks import _error_callback, _response_callback
+    from .client.callbacks import _error_callback, _response_callback, _command_callback

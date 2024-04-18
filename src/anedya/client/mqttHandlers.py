@@ -29,7 +29,7 @@ def _onconnect_handler(self, client, userdata, flags, reason_code, properties):
         # Callback for response
         self._mqttclient.message_callback_add(sub=topic_prefix + "/response", callback=self._response_callback)
         # Callback for command
-
+        self._mqttclient.message_callback_add(sub=topic_prefix + "/commands", callback=self._command_callback)
         # Call the on_connect callback if it is not None
         if self.on_connect is not None:
             self.on_connect()

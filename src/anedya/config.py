@@ -1,6 +1,8 @@
 from enum import Enum
 import uuid
 from .errors import AnedyaInvalidConfig
+from .models import CommandMessage
+from typing import Callable
 
 
 class ConnectionMode(Enum):
@@ -48,7 +50,7 @@ class AnedyaConfig:
         self.authmode = 'key'
         self.on_connect = None
         self.on_disconnect = None
-        self.on_message = None
+        self.on_command = None
 
         # Internal Variables - Do not modify them directly
         self._deviceID = None
@@ -119,6 +121,21 @@ class AnedyaConfig:
             raise AnedyaInvalidConfig(
                 "Callback function needs to be a valid function")
         self.on_disconnect = callback
+
+    def set_on_command(self, callback: Callable[[CommandMessage], None]):
+        """
+        Set a callback function that will be called when a command is received.
+
+        Args:
+            callback (function): A callback function that will be called when a command is received. The callback function should not block.
+
+        Raises:
+            AnedyaInvalidConfig: Raised when the callback is not a valid function
+        """
+        if not callable(callback):
+            raise AnedyaInvalidConfig(
+                "Callback function needs to be a valid function")
+        self.on_command = callback
 
 
 def default_config():
