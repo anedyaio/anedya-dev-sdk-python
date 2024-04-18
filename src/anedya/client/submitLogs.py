@@ -6,8 +6,15 @@ import json
 
 def submit_logs(self, logs: LogsCache, timeout: float | None = None):
     """
-    :param logs: Logs to be send. :class: LogCache format.
-    :param timeout: Timeout in seconds, default is None.
+    Submit logs to Anedya
+
+    Args:
+        logs (LogsCache): Logs
+        timeout (float | None, optional): Time out in seconds for the request. In production setup it is advisable to use a timeout or else your program can get stuck indefinitely. Defaults to None.
+
+    Raises:
+        AnedyaInvalidConfig: Method can raise this method if either configuration is not provided or if the connection mode is invalid.
+        AnedyaTxFailure: Method can raise this method if the transaction fails.
     """
     if self._config is None:
         raise AnedyaInvalidConfig('Configuration not provided')

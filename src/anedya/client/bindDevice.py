@@ -3,13 +3,21 @@ from ..config import ConnectionMode
 from ..errors import AnedyaInvalidConfig, AnedyaTxFailure
 
 
-def bind_device(self, binding_secret: str, timeout: float | None = None):
+def bind_device(self, binding_secret: str, timeout: float | None = None) -> bool:
     """
-    :param binding_secret: Binding secret to be used for binding the device
-    :raises AnedyaInvalidConfig: If the configuration is not provided
-    :raises AnedyaTxFailure: If the transaction fails
+    Call this function to bind a device with the Anedya platform
 
-    This function provides a way to bind a device to the Anedya platform.
+    Args:
+        binding_secret (str): A one time Binding secret obtained from the platform. This secret is usually passed to device during provisioning process through
+        mobile app or any other process.
+        timeout (float | None, optional): Time out in seconds for the request. In production setup it is advisable to use a timeout or else your program can get stuck indefinitely. Defaults to None.
+
+    Raises:
+        AnedyaInvalidConfig: Method can raise this method if either configuration is not provided or if the connection mode is invalid.
+        AnedyaTxFailure: Method can raise this method if the transaction fails.
+
+    Returns:
+        bool: Returns true if the device is successfully bound with the platform.
     """
     if self._config is None:
         raise AnedyaInvalidConfig('Configuration not provided')
@@ -21,7 +29,7 @@ def bind_device(self, binding_secret: str, timeout: float | None = None):
         raise AnedyaInvalidConfig('Invalid connection mode')
 
 
-def _bind_device_http(self, binding_secret: str, timeout: float | None = None):
+def _bind_device_http(self, binding_secret: str, timeout: float | None = None) -> bool:
     if self._config._testmode:
         url = "https://device.stageapi.anedya.io/v1/submitData"
     else:
@@ -36,7 +44,7 @@ def _bind_device_http(self, binding_secret: str, timeout: float | None = None):
             raise AnedyaTxFailure(payload['error'], payload['errCode'])
     except ValueError:
         raise AnedyaTxFailure(message="Invalid JSON response")
-    return
+    return True
 
 
 def _bind_device_mqtt(self, binding_secret: str, timeout: float | None = None):
