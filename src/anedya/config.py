@@ -1,6 +1,7 @@
 from enum import Enum
 import uuid
 from .errors import AnedyaInvalidConfig
+from .models import CommandMessage
 from typing import Callable
 
 
@@ -35,7 +36,7 @@ class AnedyaConfig:
             timeout (int): Timeout duration (0 for instant push).
             max_buffer_size (int): The maximum data buffer size (default
             or user-defined).
-            tls_certificate (Optional[str]): Path to the TLS certificate file 
+            tls_certificate (Optional[str]): Path to the TLS certificate file
             if using MQTT. Defaults to None.
         """
 
@@ -49,7 +50,7 @@ class AnedyaConfig:
         self.authmode = 'key'
         self.on_connect = None
         self.on_disconnect = None
-        self.on_message = None
+        self.on_command = None
 
         # Internal Variables - Do not modify them directly
         self._deviceID = None
@@ -91,24 +92,50 @@ class AnedyaConfig:
         """
         self.region = region
 
-    def set_on_connect(self, callback: Callable[[],]):
+    def set_on_connect(self, callback):
         """
-        You can use this function to set a callback function that will be called when the connection is established.
+        Set a callback function that will be called when the connection is established.
 
         Args:
-            callback (Callable[[],]): A function which will be called when the connection is established. Please note that callback functions should not be blocking.
+            callback (function): A callback function that will be called when the connection is established. The callback function should not block.
+
+        Raises:
+            AnedyaInvalidConfig: Raised when the callback is not a valid function
         """
+        if not callable(callback):
+            raise AnedyaInvalidConfig(
+                "Callback function needs to be a valid function")
         self.on_connect = callback
 
-    def set_on_disconnect(self, callback: Callable[[],]):
+    def set_on_disconnect(self, callback):
         """
-        You can use this function to set a callback function that will be called when the connection is disconnected. This callback will be called for both intentional
-        and unintentional disconnections.
+        Set a callback function that will be called when the connection is disconnected.
 
         Args:
-            callback (Callable[[],]): A function which will be called when the connection is disconnected. Please note that callback functions should not be blocking.
+            callback (function): A callback function that will be called when the connection is disconnected. The callback function should not block
+
+        Raises:
+            AnedyaInvalidConfig: Raised when the callback is not a valid function
         """
+        if not callable(callback):
+            raise AnedyaInvalidConfig(
+                "Callback function needs to be a valid function")
         self.on_disconnect = callback
+
+    def set_on_command(self, callback: Callable[[CommandMessage], None]):
+        """
+        Set a callback function that will be called when a command is received.
+
+        Args:
+            callback (function): A callback function that will be called when a command is received. The callback function should not block.
+
+        Raises:
+            AnedyaInvalidConfig: Raised when the callback is not a valid function
+        """
+        if not callable(callback):
+            raise AnedyaInvalidConfig(
+                "Callback function needs to be a valid function")
+        self.on_command = callback
 
 
 def default_config():
