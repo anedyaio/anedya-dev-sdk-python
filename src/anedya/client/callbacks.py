@@ -1,5 +1,5 @@
 import json
-from ..models import CommandMessage
+from ..models import CommandDetails
 
 
 def _response_callback(self, client, userdata, message):
@@ -25,9 +25,9 @@ def _command_callback(self, client, userdata, message):
     payload_data = json.loads(message.payload)
     # This callback is called when a command is received.
     # Convert the received command to python object and call client callback
-    cmd = CommandMessage(payload_data)
     # Call the client callback
     try:
+        cmd = CommandDetails(payload_data)
         self.on_command(cmd)
     except Exception:
         pass

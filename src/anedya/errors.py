@@ -62,3 +62,12 @@ class AnedyaTxFailure(Exception):
         self.message = message
         self.code = code
         super().__init__(self.message)
+
+
+class AnedyaInvalidType(Exception):
+    """
+    Raised when an invalid type is passed
+    """
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)

@@ -1,7 +1,7 @@
 from enum import Enum
 import uuid
 from .errors import AnedyaInvalidConfig
-from .models import CommandMessage
+from .models import CommandDetails
 from typing import Callable
 
 
@@ -122,7 +122,7 @@ class AnedyaConfig:
                 "Callback function needs to be a valid function")
         self.on_disconnect = callback
 
-    def set_on_command(self, callback: Callable[[CommandMessage], None]):
+    def set_on_command(self, callback: Callable[[CommandDetails], None]):
         """
         Set a callback function that will be called when a command is received.
 

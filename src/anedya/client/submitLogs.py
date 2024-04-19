@@ -21,7 +21,7 @@ def submit_logs(self, logs: LogsCache, timeout: float | None = None):
     if self._config.connection_mode == ConnectionMode.HTTP:
         return _submit_log_http(self, logs=logs, timeout=timeout)
     elif self._config.connection_mode == ConnectionMode.MQTT:
-        return _submit_data_mqtt(self, logs=logs, timeout=timeout)
+        return _submit_log_mqtt(self, logs=logs, timeout=timeout)
     else:
         raise AnedyaInvalidConfig('Invalid connection mode')
 
@@ -42,7 +42,7 @@ def _submit_log_http(self, logs: LogsCache, timeout: float | None = None):
         raise AnedyaTxFailure(message="Invalid JSON response")
 
 
-def _submit_data_mqtt(self, data: LogsCache, timeout: float | None = None):
+def _submit_log_mqtt(self, data: LogsCache, timeout: float | None = None):
     # Create and register a transaction
     tr = self._transactions.create_transaction()
     # Encode the payload
