@@ -102,10 +102,10 @@ class LogsCache:
         return data
 
 
-class CommandMessage:
+class CommandDetails:
     def __init__(self, commandMsg: dict):
         self.command = commandMsg["command"]
-        self.id = uuid.UUID(commandMsg["id"])
+        self.id = uuid.UUID(commandMsg["commandId"])
         if type == "string":
             self.data = commandMsg["data"]
         elif type == "binary":
@@ -114,8 +114,10 @@ class CommandMessage:
             self.data = data_bytes
         else:
             raise Exception("Invalid datatype")
-        self.type = commandMsg["type"]
+        self.type = commandMsg["datatype"]
         self.exp = datetime.datetime.fromtimestamp(commandMsg["exp"] / 1000)
+        self.status = None
+        self.updated = None
 
 
 class AnedyaEncoder(json.JSONEncoder):

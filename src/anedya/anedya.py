@@ -104,6 +104,7 @@ class AnedyaClient:
     from .client.bindDevice import bind_device
     from .client.submitData import submit_data
     from .client.submitLogs import submit_logs
+    from .client.commandsUpdate import update_command_status
     from .client.timeSync import get_time
     from .client.mqttHandlers import _onconnect_handler, _ondisconnect_handler
     from .client.callbacks import _error_callback, _response_callback, _command_callback
