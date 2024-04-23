@@ -21,7 +21,7 @@ def _onconnect_handler(self, client, userdata, flags, reason_code, properties):
         self._mqttclient.subscribe(
             topic=topic_prefix + "/response", qos=0)
         self._mqttclient.subscribe(
-            topic=topic_prefix + "/command", qos=0)
+            topic=topic_prefix + "/commands", qos=0)
         # Define all Callbacks for error and response
         # Callback for errors
         print("Adding Callbacks")
