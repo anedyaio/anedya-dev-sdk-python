@@ -4,12 +4,17 @@ import time
 client = None
 tr = None
 
+# Set the ID of the physical device
+deviceID = "<PHYSICAL-DEVICE-ID>"
+# Set the connection key for the device
+connectionKey = "<NODE-CONNECTION-KEY>"
+
 
 def main():
     config = anedya.default_config()
     config.connection_mode = anedya.ConnectionMode.MQTT
-    config.set_deviceid("67719273-7cfe-4726-a846-72ca86340916")
-    config.set_connection_key("7346b841bc8cf7fe39555ae19654612b")
+    config.set_deviceid(deviceID)
+    config.set_connection_key(connectionKey)
     config.set_on_command(callback=on_command_callback)
 
     # Create a client
@@ -23,7 +28,7 @@ def main():
     print(client._mqttclient.is_connected())
 
     # Publish the datapoint
-    
+
     input("Press Enter to continue after sending command...")
     tr.wait_to_complete()
     print("Disconnecting")
