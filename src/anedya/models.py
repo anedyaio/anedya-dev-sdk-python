@@ -3,6 +3,7 @@ import time
 import uuid
 import base64
 import datetime
+from enum import Enum
 
 
 class FloatData:
@@ -130,22 +131,58 @@ class LogsCache:
         return data
 
 
-class CommandDetails:
-    def __init__(self, commandMsg: dict):
-        self.command = commandMsg["command"]
-        self.id = uuid.UUID(commandMsg["commandId"])
-        self.type = commandMsg["datatype"]
-        if self.type == "string":
-            self.data = commandMsg["data"]
-        elif self.type == "binary":
-            base64_bytes = commandMsg["data"].encode("ascii")
-            data_bytes = base64.b64decode(base64_bytes)
-            self.data = data_bytes
+class CommandStatus(str, Enum):
+    PENDING = "pending"
+    RECEIVED = "received"
+    PROCESSING = "processing"
+    SUCCESS = "success"
+    FAILURE = "failure"
+    INVALIDATED = "invalidated"
+
+    @staticmethod
+    def from_str(label):
+        if label == 'pending':
+            return CommandStatus.PENDING
+        elif label == 'received':
+            return CommandStatus.RECEIVED
+        elif label == 'processing':
+            return CommandStatus.PROCESSING
+        elif label == 'success':
+            return CommandStatus.SUCCESS
+        elif label == 'failure':
+            return CommandStatus.FAILURE
+        elif label == 'invalidated':
+            return CommandStatus.INVALIDATED
         else:
-            raise Exception("Invalid datatype")
-        self.exp = datetime.datetime.fromtimestamp(commandMsg["exp"] / 1000)
-        self.status = None
-        self.updated = None
+            raise NotImplementedError
+
+
+class CommandDetails:
+    def __init__(self, commandMsg: dict | None = None):
+        if commandMsg is not None:
+            self.command = commandMsg["command"]
+            self.id = uuid.UUID(commandMsg["commandId"])
+            self.type = commandMsg["datatype"]
+            if self.type == "string":
+                self.data = commandMsg["data"]
+            elif self.type == "binary":
+                base64_bytes = commandMsg["data"].encode("ascii")
+                data_bytes = base64.b64decode(base64_bytes)
+                self.data = data_bytes
+            else:
+                raise Exception("Invalid datatype")
+            self.exp = datetime.datetime.fromtimestamp(commandMsg["exp"] / 1000)
+            self.status = None
+            self.updated = None
+        else:
+            self.command = None
+            self.id = None
+            self.type = None
+            self.data = None
+            self.exp = None
+            self.status = None
+            self.updated = None
+            self.issued = None
 
 
 class AnedyaEncoder(json.JSONEncoder):

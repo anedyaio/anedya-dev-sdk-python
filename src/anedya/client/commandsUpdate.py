@@ -4,18 +4,9 @@ import random
 import base64
 from ..models import CommandDetails, AnedyaEncoder
 from ..transaction import Transaction
-from enum import Enum
 from ..errors import AnedyaInvalidConfig, AnedyaInvalidType, AnedyaTxFailure
 from ..config import ConnectionMode
-
-
-class CommandStatus(str, Enum):
-    PENDING = "pending"
-    RECEIVED = "received"
-    PROCESSING = "processing"
-    SUCCESS = "success"
-    FAILURE = "failure"
-    INVALIDATED = "invalidated"
+from ..models import CommandStatus
 
 
 def update_command_status(self, command: CommandDetails, status: CommandStatus, ackdata: str | bytes | None = None, acktype: str = "string", timeout: float | None = None, callback_mode: bool = False) -> None | Transaction:
@@ -38,7 +29,7 @@ def update_command_status(self, command: CommandDetails, status: CommandStatus, 
         AnedyaTxFailure: Transaction failure
 
     Returns:
-        None | Transaction: Returns transaction object if callback_mode is True.
+        None | Transaction: Returns transaction object if callback_mode is True. returns None otherwise
     """
     if self._config is None:
         raise AnedyaInvalidConfig('Configuration not provided')
