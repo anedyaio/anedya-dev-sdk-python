@@ -5,9 +5,9 @@ import random
 # Emulate Hardware Sensor?
 virtual_sensor = True
 # Set the ID of the physical device
-deviceID = "773a6f34-db8d-48b4-8c09-fb728aec7c12"
+deviceID = "<PHYSICAL-DEVICE-ID>"
 # Set the connection key for the device
-connectionKey = "03cdf9928841ec3315d699ac9dfb224c"
+connectionKey = "<NODE-CONNECTION-KEY>"
 
 # Note: It is assumed that the humidity sensor is attached at GPIO23 of the Raspberry Pi
 
