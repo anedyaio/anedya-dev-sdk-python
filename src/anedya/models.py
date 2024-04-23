@@ -3,6 +3,7 @@ import time
 import uuid
 import base64
 import datetime
+from enum import Enum
 
 
 class FloatData:
@@ -24,6 +25,34 @@ class FloatData:
             "variable": self.variable,
             "timestamp": self.timestamp,
             "value": self.value
+        }
+        return dict
+
+
+class GeoData:
+    def __init__(self, variable: str, lat: float, long: float, timestamp_milli: int = int(time.time_ns() / 1000000)):
+        """
+        Create a Geo datapoint object which can be sent to Anedya Server
+
+        Args:
+            variable (str): Name of the variable
+            lat (float): Latitude of the location
+            lon (float): Longitude of the location
+            timestamp_milli (int, optional): Timestamp in millisecond unix epoch. Defaults to current time. Pass 0 to take Anedya Server Time
+        """
+        self.variable = variable
+        self.timestamp = timestamp_milli
+        self.lat = lat
+        self.long = long
+
+    def toJSON(self):
+        dict = {
+            "variable": self.variable,
+            "timestamp": self.timestamp,
+            "value": {
+                "lat": self.lat,
+                "long": self.long
+            }
         }
         return dict
 
@@ -102,22 +131,58 @@ class LogsCache:
         return data
 
 
-class CommandDetails:
-    def __init__(self, commandMsg: dict):
-        self.command = commandMsg["command"]
-        self.id = uuid.UUID(commandMsg["commandId"])
-        if type == "string":
-            self.data = commandMsg["data"]
-        elif type == "binary":
-            base64_bytes = commandMsg["data"].encode("ascii")
-            data_bytes = base64.b64decode(base64_bytes)
-            self.data = data_bytes
+class CommandStatus(str, Enum):
+    PENDING = "pending"
+    RECEIVED = "received"
+    PROCESSING = "processing"
+    SUCCESS = "success"
+    FAILURE = "failure"
+    INVALIDATED = "invalidated"
+
+    @staticmethod
+    def from_str(label):
+        if label == 'pending':
+            return CommandStatus.PENDING
+        elif label == 'received':
+            return CommandStatus.RECEIVED
+        elif label == 'processing':
+            return CommandStatus.PROCESSING
+        elif label == 'success':
+            return CommandStatus.SUCCESS
+        elif label == 'failure':
+            return CommandStatus.FAILURE
+        elif label == 'invalidated':
+            return CommandStatus.INVALIDATED
         else:
-            raise Exception("Invalid datatype")
-        self.type = commandMsg["datatype"]
-        self.exp = datetime.datetime.fromtimestamp(commandMsg["exp"] / 1000)
-        self.status = None
-        self.updated = None
+            raise NotImplementedError
+
+
+class CommandDetails:
+    def __init__(self, commandMsg: dict | None = None):
+        if commandMsg is not None:
+            self.command = commandMsg["command"]
+            self.id = uuid.UUID(commandMsg["commandId"])
+            self.type = commandMsg["datatype"]
+            if self.type == "string":
+                self.data = commandMsg["data"]
+            elif self.type == "binary":
+                base64_bytes = commandMsg["data"].encode("ascii")
+                data_bytes = base64.b64decode(base64_bytes)
+                self.data = data_bytes
+            else:
+                raise Exception("Invalid datatype")
+            self.exp = datetime.datetime.fromtimestamp(commandMsg["exp"] / 1000)
+            self.status = None
+            self.updated = None
+        else:
+            self.command = None
+            self.id = None
+            self.type = None
+            self.data = None
+            self.exp = None
+            self.status = None
+            self.updated = None
+            self.issued = None
 
 
 class AnedyaEncoder(json.JSONEncoder):

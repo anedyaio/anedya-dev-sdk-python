@@ -1,7 +1,8 @@
 # src/__init__.py
 
 from .config import AnedyaConfig, ConnectionMode, default_config
-from .models import DataPoints, FloatData
+from .models import DataPoints, FloatData, GeoData, CommandDetails
+from .client.commandsUpdate import CommandStatus
 from .anedya import AnedyaClient
 
 __all__ = ['AnedyaConfig',
@@ -9,4 +10,7 @@ __all__ = ['AnedyaConfig',
            'default_config',
            'FloatData',
            'DataPoints',
-           'AnedyaClient']
+           'AnedyaClient',
+           'CommandDetails',
+           'GeoData',
+           'CommandStatus']

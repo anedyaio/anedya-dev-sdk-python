@@ -1,28 +1,42 @@
 import anedya
 import time
 
-config = anedya.default_config()
-config.connection_mode = anedya.ConnectionMode.MQTT
-config.set_deviceid("<SET-DEVICE-ID>")
-config.set_connection_key("<SET-CONNECTION-KEY>")
+client = None
+tr = None
 
-# Create a client
-client = anedya.AnedyaClient(config)
 
-time.sleep(1)
-# Client is created, now connect with the MQTT server
-client.connect()
-time.sleep(2)
-print(client._mqttclient.is_connected())
+def main():
+    config = anedya.default_config()
+    config.connection_mode = anedya.ConnectionMode.MQTT
+    config.set_deviceid("67719273-7cfe-4726-a846-72ca86340916")
+    config.set_connection_key("7346b841bc8cf7fe39555ae19654612b")
+    config.set_on_command(callback=on_command_callback)
 
-# Publish the datapoint
-data = anedya.DataPoints()
+    # Create a client
+    global client
+    client = anedya.AnedyaClient(config)
 
-dp1 = anedya.FloatData(variable='temperature', timestamp_milli=int(time.time_ns() / 1000000), value=10)
+    time.sleep(1)
+    # Client is created, now connect with the MQTT server
+    client.connect()
+    time.sleep(2)
+    print(client._mqttclient.is_connected())
 
-data.append(dp1)
+    # Publish the datapoint
+    
+    input("Press Enter to continue after sending command...")
+    tr.wait_to_complete()
+    print("Disconnecting")
+    client.disconnect()
 
-client.submit_data(data)
 
-time.sleep(10)
-client.disconnect()
+def on_command_callback(cmdinput: anedya.CommandDetails):
+    print(f"Received command from platform: {cmdinput.command}")
+    # Change the status of the command
+    global tr
+    tr = client.update_command_status(command=cmdinput, status=anedya.CommandStatus.RECEIVED, callback_mode=True)
+    return
+
+
+if __name__ == '__main__':
+    main()
