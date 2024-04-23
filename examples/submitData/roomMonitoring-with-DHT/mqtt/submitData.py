@@ -5,9 +5,9 @@ import random
 # Emulate Hardware Sensor?
 virtual_sensor = True
 # Set the ID of the physical device
-deviceID = "<PHYSICAL-DEVICE-UUID>"
+deviceID = "773a6f34-db8d-48b4-8c09-fb728aec7c12"
 # Set the connection key for the device
-connectionKey = "<NODE-CONNECTION-KEY>"
+connectionKey = "03cdf9928841ec3315d699ac9dfb224c"
 
 # Note: It is assumed that the humidity sensor is attached at GPIO23 of the Raspberry Pi
 
@@ -31,6 +31,7 @@ def main():
     time.sleep(1)
     # Client is created, now connect with the MQTT server
     client.connect()
+  
     time.sleep(2)
     print(client._mqttclient.is_connected())
 
@@ -65,7 +66,7 @@ def main():
             humidity = 63 + (
                 random.randrange(start=-10, stop=10, step=1) / 10
             )  # Assign static value in case of virtual sensor
-        print("Temperature: {t}C Humidity: {h}%".format(t=temperature, h=humidity))
+        print("Temperature: {t}C Humidity:{h}%".format(t=temperature, h=humidity))
         # Create an Anedya Datapoint object
         # Note that the timestamp needs to be in Milliseconds
         # variable filed requires the identifiers provided during variable creation
@@ -85,8 +86,9 @@ def main():
         data.append(dp2)
 
         client.submit_data(data)
+        print("Data Pushed!")
         data.reset_datapoints()
-        time.sleep(4)
+        time.sleep(15)
 
     client.disconnect()
 
