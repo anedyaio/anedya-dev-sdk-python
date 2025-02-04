@@ -31,12 +31,11 @@ def _submit_data_http(self, data: DataPoints, timeout: float | None = None):
     if self._config._testmode:
         url = "https://device.stageapi.anedya.io/v1/submitData"
     else:
-        url = self._baseurl + "/v1/submitData"
+        url = "https://"+ self._baseurl + "/v1/submitData"
     r = self._httpsession.post(url, data=data.encodeJSON(), timeout=timeout)
     # print(r.json())
     try:
-        jsonResponse = r.json()
-        payload = json.loads(jsonResponse)
+        payload = r.json()
         if payload['success'] is not True:
             raise AnedyaTxFailure(payload['error'], payload['errorcode'])
     except ValueError:
