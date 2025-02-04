@@ -41,7 +41,7 @@ def _time_sync_http(self, timeout: float | None = None):
         jsonResponse = r.json()
         payload = json.loads(jsonResponse)
         if payload['success'] is not True:
-            raise AnedyaTxFailure(payload['error'], payload['errCode'])
+            raise AnedyaTxFailure(payload['error'], payload['errorcode'])
         deviceRecTime = int(time.time_ns() / 1000000)
         ServerReceiveTime = int(jsonResponse["serverReceiveTime"])
         ServerSendTime = int(jsonResponse["serverSendTime"])

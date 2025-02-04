@@ -40,7 +40,7 @@ def _next_command_http(self, timeout: float | None = None) -> tuple[CommandDetai
         jsonResponse = r.json()
         payload = json.loads(jsonResponse)
         if payload['success'] is not True:
-            raise AnedyaTxFailure(payload['error'], payload['errCode'])
+            raise AnedyaTxFailure(payload['error'], payload['errorcode'])
         # Payload has success now create a CommandDetails object and return
         command = CommandDetails()
         command.id = uuid.UUID(payload["commandId"])
@@ -89,7 +89,7 @@ def _next_command_mqtt(self, timeout: float | None = None) -> tuple[CommandDetai
     self._transactions.clear_transaction(tr)
     # Check if transaction is successful or not
     if data['success'] is not True:
-        raise AnedyaTxFailure(data['error'], data['errCode'])
+        raise AnedyaTxFailure(data['error'], data['errorcode'])
     try:
         if data['available'] is not True:
             return None, None
