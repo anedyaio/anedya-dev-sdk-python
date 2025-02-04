@@ -185,6 +185,52 @@ class CommandDetails:
             self.issued = None
 
 
+class VSUpdate:
+    def __init__(self, VSUpdateMessge: dict | None = None):
+        if VSUpdateMessge is not None:
+            self.namespace = VSUpdateMessge["namespace"]
+            self.type = VSDataType.from_str(VSUpdateMessge["type"])
+            self.key = VSUpdateMessge["key"]
+            if self.type == VSDataType.STRING:
+                self.value = VSUpdateMessge["value"]
+            elif self.type == VSDataType.BINARY:
+                base64_bytes = VSUpdateMessge["data"].encode("ascii")
+                data_bytes = base64.b64decode(base64_bytes)
+                self.data = data_bytes
+            elif self.type == VSDataType.FLOAT:
+                self.value = VSUpdateMessge["value"]
+            elif self.type == VSDataType.BOOL:
+                self.value = VSUpdateMessge["value"]
+            self.value = VSUpdateMessge["value"]
+            self.modified = datetime.datetime.fromtimestamp(VSUpdateMessge["modified"] / 1000)
+        else:
+            self.namespace = None
+            self.type = None
+            self.key = None
+            self.value = None
+            self.modified = None
+
+
+class VSDataType(str, Enum):
+    BINARY = "binary"
+    STRING = "string"
+    FLOAT = "float"
+    BOOL = "bool"
+
+    @staticmethod
+    def from_str(label):
+        if label == 'binary':
+            return VSDataType.BINARY
+        elif label == 'string':
+            return VSDataType.STRING
+        elif label == 'float':
+            return VSDataType.FLOAT
+        elif label == 'bool':
+            return VSDataType.BOOL
+        else:
+            return NotImplementedError
+
+
 class AnedyaEncoder(json.JSONEncoder):
     def default(self, obj):
         if hasattr(obj, 'toJSON'):

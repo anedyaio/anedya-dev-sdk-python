@@ -22,6 +22,8 @@ def _onconnect_handler(self, client, userdata, flags, reason_code, properties):
             topic=topic_prefix + "/response", qos=0)
         self._mqttclient.subscribe(
             topic=topic_prefix + "/commands", qos=0)
+        self._mqttclient.subscribe(
+            topic=topic_prefix + "/valuestore/updates/json", qos=0)
         # Define all Callbacks for error and response
         # Callback for errors
         print("Adding Callbacks")
@@ -30,6 +32,8 @@ def _onconnect_handler(self, client, userdata, flags, reason_code, properties):
         self._mqttclient.message_callback_add(sub=topic_prefix + "/response", callback=self._response_callback)
         # Callback for command
         self._mqttclient.message_callback_add(sub=topic_prefix + "/commands", callback=self._command_callback)
+        # Callback for valuestore updates
+        self._mqttclient.message_callback_add(sub=topic_prefix + "/valuestore/updates/json", callback=self._vsupdate_callback)
         # Call the on_connect callback if it is not None
         if self.on_connect is not None:
             self.on_connect()

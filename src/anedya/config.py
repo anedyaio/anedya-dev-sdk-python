@@ -1,7 +1,7 @@
 from enum import Enum
 import uuid
 from .errors import AnedyaInvalidConfig
-from .models import CommandDetails
+from .models import CommandDetails, VSUpdate
 from typing import Callable
 
 
@@ -51,6 +51,7 @@ class AnedyaConfig:
         self.on_connect = None
         self.on_disconnect = None
         self.on_command = None
+        self.on_vsupdate = None
 
         # Internal Variables - Do not modify them directly
         self._deviceID = None
@@ -136,6 +137,21 @@ class AnedyaConfig:
             raise AnedyaInvalidConfig(
                 "Callback function needs to be a valid function")
         self.on_command = callback
+
+    def set_on_vsupdate(self, callback: Callable[[VSUpdate], None]):
+        """
+        Set a callback function that will be called when a valuestore update is updated.
+
+        Args:
+            callback (function): A callback function that will be called when a valuestore update is received. The callback function should not block.
+
+        Raises:
+            AnedyaInvalidConfig: Raised when the callback is not a valid function
+        """
+        if not callable(callback):
+            raise AnedyaInvalidConfig(
+                "Callback function needs to be a valid function")
+        self.on_vsupdate = callback
 
 
 def default_config():
