@@ -98,6 +98,9 @@ class AnedyaClient:
             print(err)
         # Start the loop
 
+    def is_connected(self):
+        return self._mqttclient.is_connected()
+
     def disconnect(self):
         self._mqttclient.disconnect()
         return
