@@ -53,7 +53,7 @@ def _update_command_status_http(self, command: CommandDetails, status: CommandSt
         jsonResponse = r.json()
         payload = json.loads(jsonResponse)
         if payload['success'] is not True:
-            raise AnedyaTxFailure(payload['error'], payload['errCode'])
+            raise AnedyaTxFailure(payload['error'], payload['errorcode'])
     except ValueError:
         raise AnedyaTxFailure(message="Invalid JSON response")
     return
@@ -91,7 +91,7 @@ def _update_command_status_mqtt(self, command: CommandDetails, status: CommandSt
     self._transactions.clear_transaction(tr)
     # Check if transaction is successful or not
     if data['success'] is not True:
-        raise AnedyaTxFailure(data['error'], data['errCode'])
+        raise AnedyaTxFailure(data['error'], data['errorcode'])
     return
 
 

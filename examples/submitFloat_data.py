@@ -5,9 +5,9 @@ import random
 # Emulate Hardware Sensor?
 virtual_sensor = True
 # Set the ID of the physical device
-deviceID = '<PHYSICAL-DEVICE-UUID>'
+deviceID = "PHYSICAL_DEVICE_ID"
 # Set the connection key for the device
-connectionKey = '<NODE-CONNECTION-KEY>'
+connectionKey = "CONNECTION_KEY"
 
 # Note: It is assumed that the humidity sensor is attached at GPIO23 of the Raspberry Pi
 
@@ -20,26 +20,31 @@ if not virtual_sensor:
 def main():
     # Create a configuration object
     config = anedya.default_config()
+    config.connection_mode = anedya.ConnectionMode.MQTT  # Set the connection mode, HTTP or MQTT
     # Set the config parameters
     config.set_deviceid(deviceID)
     config.set_connection_key(connectionKey)
 
-    # Configuration has been set, create an Anedya Client Instance
+    # Create a client
     client = anedya.AnedyaClient(config)
 
-    data = anedya.batch()
+    time.sleep(1)
+    # Client is created, now connect with the MQTT server
+    client.connect()  # if connection mode is http so comment this line
 
-    # Client is set, now we can start collecting data
-
+    time.sleep(2)
+    
     if not virtual_sensor:
         for proc in psutil.process_iter():
-            if proc.name() == 'libgpiod_pulsein' or proc.name() == 'libgpiod_pulsei':
+            if proc.name() == "libgpiod_pulsein" or proc.name() == "libgpiod_pulsei":
                 proc.kill()
         sensor = adafruit_dht.DHT11(board.D23)
 
     while True:
         # Fetch data from the sensor
-        print('Fetching data from the sensor')
+        print("Fetching data from the sensor")
+        # Publish the datapoint
+        data = anedya.DataPoints()
         # TODO
         if not virtual_sensor:
             try:
@@ -54,28 +59,38 @@ def main():
                 sensor.exit()
                 raise error
         else:
-            temperature = 23 + (random.randrange(start=-5, stop=5, step=1) / 10)  # Assign static value in case of virtual sensor
-            humidity = 63 + (random.randrange(start=-10, stop=10, step=1) / 10)  # Assign static value in case of virtual sensor
-        print('Temperature: {t}C Humidity: {h}%'.format(t=temperature, h=humidity))
+            temperature = 23 + (
+                random.randrange(start=-5, stop=5, step=1) / 10
+            )  # Assign static value in case of virtual sensor
+            humidity = 63 + (
+                random.randrange(start=-10, stop=10, step=1) / 10
+            )  # Assign static value in case of virtual sensor
+        print("Temperature: {t}C Humidity:{h}%".format(t=temperature, h=humidity))
         # Create an Anedya Datapoint object
         # Note that the timestamp needs to be in Milliseconds
         # variable filed requires the identifiers provided during variable creation
-        dp1 = anedya.FloatData(variable='temperature', timestamp_milli=int(time.time_ns() / 1000000), value=temperature)
-        dp2 = anedya.FloatData(variable='humidity', timestamp_milli=int(time.time_ns() / 1000000), value=humidity)
+        dp1 = anedya.FloatData(
+            variable="temperature",
+            timestamp_milli=int(time.time_ns() / 1000000),
+            value=temperature,
+        )
+        dp2 = anedya.FloatData(
+            variable="humidity",
+            timestamp_milli=int(time.time_ns() / 1000000),
+            value=humidity,
+        )
 
         # Append the data in a data store.
         data.append(dp1)
         data.append(dp2)
 
-        # Submit the data to the Anedya Platform
-        success = client.submit_data(data)
-        if success:
-            print('Data pushed to Anedya Cloud!')
-        else:
-            print('Error pushing data to the cloud!')
-        # Clear all the data in the store before proceeding to next
+        client.submit_data(data)
+        print("Data pushed to Anedya!")
         data.reset_datapoints()
+        print("=============================")
         time.sleep(15)
+
+    client.disconnect()
 
 
 if __name__ == "__main__":

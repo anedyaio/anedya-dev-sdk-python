@@ -37,7 +37,7 @@ def _submit_log_http(self, logs: LogsCache, timeout: float | None = None):
         jsonResponse = r.json()
         payload = json.loads(jsonResponse)
         if payload['success'] is not True:
-            raise AnedyaTxFailure(payload['error'], payload['errCode'])
+            raise AnedyaTxFailure(payload['error'], payload['errorcode'])
     except ValueError:
         raise AnedyaTxFailure(message="Invalid JSON response")
 
@@ -60,7 +60,7 @@ def _submit_log_mqtt(self, data: LogsCache, timeout: float | None = None):
     self._transactions.clear_transaction(tr)
     # Check if transaction is successful or not
     if data['success'] is not True:
-        raise AnedyaTxFailure(data['error'], data['errCode'])
+        raise AnedyaTxFailure(data['error'], data['errorcode'])
     return
 
 
