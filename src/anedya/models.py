@@ -202,7 +202,7 @@ class VSUpdate:
             elif self.type == VSDataType.BOOL:
                 self.value = VSUpdateMessge["value"]
             self.value = VSUpdateMessge["value"]
-            self.modified = datetime.datetime.fromtimestamp(VSUpdateMessge["modified"] / 1000)
+            self.modified = datetime.datetime.fromtimestamp(VSUpdateMessge["modified"])
         else:
             self.namespace = None
             self.type = None
