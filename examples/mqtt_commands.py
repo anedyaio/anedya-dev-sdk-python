@@ -25,7 +25,9 @@ def main():
     # Client is created, now connect with the MQTT server
     client.connect()
     time.sleep(2)
-    print(client._mqttclient.is_connected())
+    if not client.is_connected():
+        print("Client not connected")
+        return
 
     # Publish the datapoint
 

@@ -67,9 +67,9 @@ def _next_command_mqtt(self, timeout: float | None = None) -> tuple[CommandDetai
     d = _next_command_req(tr.get_id())
     payload = d.encodeJSON()
     # Publish the message
-    print(payload)
+    # print(payload)
     topic_prefix = "$anedya/device/" + str(self._config._deviceID)
-    print(topic_prefix + "/commands/updateStatus/json")
+    # print(topic_prefix + "/commands/updateStatus/json")
     msginfo = self._mqttclient.publish(topic=topic_prefix + "/commands/updateStatus/json",
                                        payload=payload, qos=1)
     try:

@@ -26,7 +26,7 @@ def _onconnect_handler(self, client, userdata, flags, reason_code, properties):
             topic=topic_prefix + "/valuestore/updates/json", qos=0)
         # Define all Callbacks for error and response
         # Callback for errors
-        print("Adding Callbacks")
+        # print("Adding Callbacks")
         self._mqttclient.message_callback_add(sub=topic_prefix + "/errors", callback=self._error_callback)
         # Callback for response
         self._mqttclient.message_callback_add(sub=topic_prefix + "/response", callback=self._response_callback)
