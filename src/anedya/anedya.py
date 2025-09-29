@@ -89,13 +89,16 @@ class AnedyaClient:
             raise AnedyaInvalidConfig(
                 'Connection mode is HTTP, connect is not supported')
         if self._config.mqtt_mode == MQTTMode.TCP:
-            print(self._mqttclient)
+            # print(self._mqttclient)
             self._mqttclient.loop_start()
-            print("device." + self._config.region + ".anedya.io")
+            # print("mqtt." + self._config.region + ".anedya.io")
             err = self._mqttclient.connect(
-                host="device.ap-in-1.anedya.io", port=8804,
+                host="mqtt.ap-in-1.anedya.io", port=8804,
                 keepalive=60)
-            print(err)
+            # print(err)
+            if err != 0:
+                raise AnedyaInvalidConfig(
+                    'MQTT Connection Error: ' + str(err))
         # Start the loop
 
     def is_connected(self):
