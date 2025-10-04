@@ -38,7 +38,7 @@ class AnedyaClient:
             self._mqttclient = mqtt.Client(
                 callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
                 client_id=str(self._config._deviceID),
-                transport='websockets',
+                transport='tcp',
                 protocol=MQTTv5)
             self._mqttclient.username_pw_set(
                 username=str(self._config._deviceID),
@@ -93,7 +93,7 @@ class AnedyaClient:
             self._mqttclient.loop_start()
             # print("mqtt." + self._config.region + ".anedya.io")
             err = self._mqttclient.connect(
-                host="mqtt.ap-in-1.anedya.io", port=8804,
+                host="mqtt.ap-in-1.anedya.io", port=8883,
                 keepalive=60)
             # print(err)
             if err != 0:
