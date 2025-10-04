@@ -1,17 +1,17 @@
 """
-    Copyright 2024 Anedya Systems Private Limited
+ Copyright 2024 Anedya Systems Private Limited
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+    http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 """
 
 from .config import AnedyaConfig
@@ -38,11 +38,13 @@ class AnedyaClient:
             self._mqttclient = mqtt.Client(
                 callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
                 client_id=str(self._config._deviceID),
-                transport='tcp',
-                protocol=MQTTv5)
+                transport="websockets" if config.mqtt_mode == MQTTMode.WSS else "tcp",
+                protocol=MQTTv5,
+            )
             self._mqttclient.username_pw_set(
                 username=str(self._config._deviceID),
-                password=self._config.connection_key)
+                password=self._config.connection_key,
+            )
             self.on_connect = config.on_connect
             self.on_disconnect = config.on_disconnect
             self.on_command = config.on_command
@@ -62,9 +64,11 @@ class AnedyaClient:
         self._httpsession = requests.Session()
         # Base URL setup
         self._baseurl = "device." + self._config.region + ".anedya.io"
-        headers = {'Content-type': 'application/json',
-                   'Auth-mode': self._config.authmode,
-                   'Authorization': self._config.connection_key}
+        headers = {
+            "Content-type": "application/json",
+            "Auth-mode": self._config.authmode,
+            "Authorization": self._config.connection_key,
+        }
         self._httpsession.headers.update(headers)
         return
 
@@ -76,29 +80,29 @@ class AnedyaClient:
             config (AnedyaConfig): Anedya SDK configuration.
         """
         if config.connection_key == "":
-            raise AnedyaInvalidConfig(
-                'Configuration: connection key can not be empty!')
+            raise AnedyaInvalidConfig("Configuration: connection key can not be empty!")
         if config._deviceid_set is False:
-            raise AnedyaInvalidConfig(
-                'Configuration: need to set a valid Device ID')
+            raise AnedyaInvalidConfig("Configuration: need to set a valid Device ID")
         self._config = config
         return
 
     def connect(self):
         if self._config.connection_mode == ConnectionMode.HTTP:
             raise AnedyaInvalidConfig(
-                'Connection mode is HTTP, connect is not supported')
+                "Connection mode is HTTP, connect is not supported"
+            )
         if self._config.mqtt_mode == MQTTMode.TCP:
             # print(self._mqttclient)
             self._mqttclient.loop_start()
             # print("mqtt." + self._config.region + ".anedya.io")
             err = self._mqttclient.connect(
-                host=f"mqtt.{self._config.region}.anedya.io", port=8883,
-                keepalive=60)
+                host=f"mqtt.{self._config.region}.anedya.io",
+                port=8883 if self._config.mqtt_mode == MQTTMode.TCP else 8804,
+                keepalive=60,
+            )
             # print(err)
             if err != 0:
-                raise AnedyaInvalidConfig(
-                    'MQTT Connection Error: ' + str(err))
+                raise AnedyaInvalidConfig("MQTT Connection Error: " + str(err))
         # Start the loop
 
     def is_connected(self):
@@ -115,4 +119,9 @@ class AnedyaClient:
     from .client.commandsNext import next_command
     from .client.timeSync import get_time
     from .client.mqttHandlers import _onconnect_handler, _ondisconnect_handler
-    from .client.callbacks import _error_callback, _response_callback, _command_callback, _vsupdate_callback
+    from .client.callbacks import (
+        _error_callback,
+        _response_callback,
+        _command_callback,
+        _vsupdate_callback,
+    )
